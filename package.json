@@ -1,0 +1,18 @@
+{
+  "name": "express-react-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.jsx",
+  "scripts": {
+    "start-server": "node server.js",
+    "import-data": "node import.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.17.1",
+    "md5": "^2.3.0",
+    "sha1": "1.1.1",
+    "sqlite3": "5.0.0"
+  }
+}
