@@ -2,7 +2,8 @@ const data = require('./data_formatted');
 const sqlite3 = require('sqlite3').verbose();
 const md5 = require('md5');
 
-let db = new sqlite3.Database('./data.db', (err) => {
+// let db = new sqlite3.Database('./data.db', (err) => {
+let db = new sqlite3.Database(':memory:', (err) => {
   if (err) {
     return console.error(err.message);
   }
@@ -153,9 +154,9 @@ sqlite3.Database.prototype.runBatchAsync = function (statements) {
           const inputMap = {};
           recipe.iI.filter((item) => item).map((item) => ({
             amount: item.ims ? item.ims[0].a : item.a,
-            items: item.ims ? item.ims.map((subItem) => subItem.uN).filter((i) => i) : [item.uN]
+            items: item.ims ? item.ims.map((subItem) => subItem.uN) : [item.uN]
           })).forEach((item) => {
-            const key = JSON.stringify(Array.from(new Set(item.items)).sort((a, b) => a < b ? -1 : 1));
+            const key = JSON.stringify(Array.from(new Set(item.items)).filter((i) => i).sort((a, b) => a < b ? -1 : 1));
             inputMap[key] = (inputMap[key] || 0) + item.amount;
           });
           const input = Object.entries(inputMap).map(([key, amount]) => ({amount, items: JSON.parse(key)}));
@@ -235,11 +236,40 @@ sqlite3.Database.prototype.runBatchAsync = function (statements) {
     });
   };
 
-  await db.run(`DELETE FROM item`);
-  await db.run(`DELETE FROM recipe`);
-  await db.run(`DELETE FROM recipe_output`);
-  await db.run(`DELETE FROM recipe_input`);
-  await db.run(`DELETE FROM recipe_input_item`);
+  await db.run(`CREATE TABLE item (
+    id text NOT NULL PRIMARY KEY,
+    type text NOT NULL,
+    name text NOT NULL
+  );`);
+  await db.run(`CREATE TABLE recipe (
+    id text NOT NULL PRIMARY KEY,
+    type text NOT NULL,
+    eu_per_tick integer,
+    duration integer
+  );`);
+  await db.run(`CREATE TABLE recipe_input (
+    id integer NOT NULL,
+    recipe_id text NOT NULL,
+    amount integer NOT NULL,
+    PRIMARY KEY (id, recipe_id)
+  );`);
+  await db.run(`CREATE TABLE recipe_input_item (
+    recipe_id text NOT NULL,
+    recipe_input_id integer NOT NULL,
+    item_id text NOT NULL,
+    PRIMARY KEY (recipe_id, recipe_input_id, item_id)
+  );`);
+  await db.run(`CREATE TABLE recipe_output (
+    recipe_id text NOT NULL,
+    item_id text NOT NULL,
+    amount integer NOT NULL,
+    PRIMARY KEY (recipe_id, item_id)
+  );`);
+  // await db.run(`DELETE FROM item`);
+  // await db.run(`DELETE FROM recipe`);
+  // await db.run(`DELETE FROM recipe_output`);
+  // await db.run(`DELETE FROM recipe_input`);
+  // await db.run(`DELETE FROM recipe_input_item`);
 
   console.log('Preparing statements...');
   console.time('    > Finished preparing statements');
@@ -318,7 +348,7 @@ sqlite3.Database.prototype.runBatchAsync = function (statements) {
       (?, ?, ?)
   `, recipeInputItemData);
 
-  recipeInputItemData.forEach(([id,, item], index) => {
+  recipeInputItemData.forEach(([id, , item], index) => {
     if (id == null || item == null) {
       console.error('ERROR: id or item is NULL:', recipeInputItemData[index]);
       console.error('Prev:', recipeInputItemData[index - 1]);
@@ -360,6 +390,28 @@ sqlite3.Database.prototype.runBatchAsync = function (statements) {
 
   console.log('');
   console.timeEnd('> Finished!');
+
+  console.log('Testing...');
+  console.time('    > Finished Testing');
+  db.each(`
+    SELECT
+      count(*)
+    FROM
+      recipe r
+      LEFT JOIN recipe_input ri
+      ON r.id = ri.recipe_id
+      LEFT JOIN recipe_input_item rii
+      ON r.id = rii.recipe_id AND ri.id = rii.recipe_input_id
+      LEFT JOIN item ii
+      ON rii.item_id = ii.id
+      LEFT JOIN recipe_output ro
+      ON r.id = ro.recipe_id
+      LEFT JOIN item io
+      ON ro.item_id = io.id
+    WHERE
+      io.name LIKE '%iron pickaxe%'
+  `);
+  console.timeEnd('    > Finished Testing');
 
 // close the database connection
   db.close((err) => {
