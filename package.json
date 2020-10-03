@@ -5,7 +5,7 @@
   "main": "index.jsx",
   "scripts": {
     "start-server": "node server.js",
-    "import-data": "node import.js"
+    "convert-data": "node convert.js"
   },
   "author": "",
   "license": "ISC",
