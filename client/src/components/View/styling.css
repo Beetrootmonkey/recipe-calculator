@@ -33,7 +33,9 @@
 
 .View > .view-header {
   display: flex;
-  padding-right: 8px;
+  margin-right: 8px;
+  border-bottom: #e1e1e1 1px solid;
+  border-bottom-right-radius: 4px;
 }
 
 .View > .view-header > .title {

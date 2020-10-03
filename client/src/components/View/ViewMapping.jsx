@@ -1,7 +1,7 @@
 import React from 'react';
 import {getDisplayNameFromRecipeIngredient} from '../../util/IngredientFormat';
-import View from './View';
 import Button from '../Button/Button';
+import View from './View';
 
 const ViewMapping = ({onClickButton, recipeMapping}) => {
 
@@ -12,22 +12,13 @@ const ViewMapping = ({onClickButton, recipeMapping}) => {
     </div>
     <div className='view-body'>
       <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Recipe Type</th>
-            <th>Input</th>
-            <th>Output</th>
-          </tr>
-        </thead>
         <tbody>
-          {Object.entries(recipeMapping || {}).map(([itemId, recipe]) => {
-            return <tr key={itemId}>
-              <td>{itemId}</td>
-              <td>{recipe.type}</td>
-              <td>{recipe.inputs.map(getDisplayNameFromRecipeIngredient).join(' + ')}</td>
-              <td>{recipe.outputs.map(getDisplayNameFromRecipeIngredient).join(' + ')}</td>
-            </tr>
+          {Object.values(recipeMapping || {}).map(({ingredient, recipe}) => {
+            const title = recipe.type + ' | ' + recipe.inputs.map(getDisplayNameFromRecipeIngredient)
+              .join(' + ') + ' = ' + recipe.outputs.map(getDisplayNameFromRecipeIngredient).join(' + ');
+            return <tr key={ingredient.id} title={title}>
+              <td>{ingredient.name}</td>
+            </tr>;
           })}
         </tbody>
       </table>

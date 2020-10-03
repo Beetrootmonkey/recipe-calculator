@@ -1,5 +1,4 @@
 import React from 'react';
-import {getDisplayNameFromRecipeIngredient} from '../../util/IngredientFormat';
 import Button from '../Button/Button';
 import View from './View';
 
@@ -8,9 +7,15 @@ const ViewTree = ({onClickButton, onClickElement, recipeMapping, recipeTreeRoots
   const list = [];
   const addInput = (ingredient, path) => {
     list.push({...ingredient, path});
-    const recipe = recipeMapping[ingredient.id];
+    const obj = recipeMapping[ingredient.id];
+    if (obj == null) return;
+    const {recipe} = obj;
     if (recipe) {
-      recipe.inputs.forEach((input) => addInput(input, (path == null  ? '└─    ' : '      ') + (path || '')));
+      if (recipe.inputs) {
+        recipe.inputs.forEach((input) => addInput(input, (path == null ? '└─    ' : '      ') + (path || '')));
+      } else {
+        console.error('Found recipe with no inputs:', recipe);
+      }
     }
   };
   Object.values(recipeTreeRoots || {}).forEach((ingredient) => {
@@ -28,7 +33,7 @@ const ViewTree = ({onClickButton, onClickElement, recipeMapping, recipeTreeRoots
                     title={ingredient.type + ' | ' + ingredient.id}>
           <div>{ingredient.path}</div>
           <div>{ingredient.name}</div>
-        </div>
+        </div>;
       })}
     </div>
   </View>;

@@ -36,7 +36,7 @@ const App = () => {
     recipeModal = <RecipeModal outputItem={recipeModalData} closeModal={() => setRecipeModalData(null)}
                                onConfirm={(recipe) => setRecipeMapping((state) => ({
                                  ...state,
-                                 [recipeModalData.id]: recipe
+                                 [recipeModalData.id]: {ingredient: recipeModalData, recipe}
                                }))}/>;
   }
 
