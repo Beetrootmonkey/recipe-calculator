@@ -29,8 +29,9 @@ const ViewTree = ({onClickButton, onClickElement, recipeMapping, recipeTreeRoots
     </div>
     <div className='view-body'>
       {list.map((ingredient) => {
+        const title = 'Click to add a recipe for ' + ingredient.name;
         return <div className='view-tree-node' key={ingredient.id} onClick={() => onClickElement(ingredient)}
-                    title={ingredient.type + ' | ' + ingredient.id}>
+                    title={title}>
           <div>{ingredient.path}</div>
           <div>{ingredient.name}</div>
         </div>;

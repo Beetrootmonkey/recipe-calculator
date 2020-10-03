@@ -69,6 +69,7 @@
 .View.ViewMapping .view-mapping-entry > .remove-button {
   cursor: pointer;
   color: transparent;
+  margin-right: 2px;
 }
 
 .View.ViewMapping .view-mapping-entry:hover > .remove-button {
@@ -87,5 +88,28 @@
 
 .View.ViewMapping .view-mapping-entry > .remove-button:active {
   background-color: #ff2b1d;
+  color: white;
+}
+
+.View.ViewSummary .view-summary-entry {
+  display: flex;
+  justify-content: space-between;
+}
+
+.View.ViewSummary .view-summary-entry-leaf {
+  margin-right: 8px;
+}
+
+.View.ViewSummary .view-summary-entry-root {
+  margin-right: 8px;
+}
+
+.View.ViewSummary .view-summary-entry {
+  display: flex;
+  cursor: pointer;
+}
+
+.View.ViewSummary .view-summary-entry:hover {
+  background-color: cornflowerblue;
   color: white;
 }

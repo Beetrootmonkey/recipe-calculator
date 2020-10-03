@@ -5,6 +5,7 @@ import IngredientModal from '../Modal/IngredientModal';
 import RecipeModal from '../Modal/RecipeModal';
 import Navbar from '../Navbar/Navbar';
 import ViewMapping from '../View/ViewMapping';
+import ViewSummary from '../View/ViewSummary';
 import ViewTree from '../View/ViewTree';
 import './styling.css';
 
@@ -54,7 +55,9 @@ const App = () => {
         <ViewTree onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                   onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
                   recipeTreeRoots={recipeTreeRoots}/>
-        {/*<ViewSummary/>*/}
+        <ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
+                  onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
+                  recipeTreeRoots={recipeTreeRoots}/>
         {/*<ViewInstructions/>*/}
       </div>
     </div>
