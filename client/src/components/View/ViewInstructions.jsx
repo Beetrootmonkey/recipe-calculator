@@ -4,11 +4,11 @@ import Button from '../Button/Button';
 
 const ViewInstructions = () => {
 
-  return <View className='instructions'>
-    <header>
+  return <View className='ViewInstructions'>
+    <div className='view-header'>
       <div className='title'>Instructions</div>
       <Button>+</Button>
-    </header>
+    </div>
   </View>;
 };
 

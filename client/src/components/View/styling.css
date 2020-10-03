@@ -7,35 +7,45 @@
   flex-direction: column;
 }
 
-.View.mapping {
+.View.ViewMapping {
   flex: 1 1;
   border-right: #e1e1e1 1px solid;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
 }
 
-.View.tree {
+.View.ViewTree {
   flex: 2 2;
   border-right: #e1e1e1 1px solid;
 }
 
-.View.summary {
+.View.ViewSummary {
   flex: 1 1;
   border-right: #e1e1e1 1px solid;
 }
 
-.View.instructions {
+.View.ViewInstructions {
   flex: 1 1;
   border-right: #e1e1e1 1px solid;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
 }
 
-.View > header {
+.View > .view-header {
   display: flex;
   padding-right: 8px;
 }
 
-.View > header > .title {
+.View > .view-header > .title {
   flex: 1;
+}
+
+.View.ViewTree .view-tree-node {
+  display: flex;
+  cursor: pointer;
+}
+
+.View.ViewTree .view-tree-node:hover {
+  background-color: cornflowerblue;
+  color: white;
 }

@@ -4,11 +4,11 @@ import Button from '../Button/Button';
 
 const ViewSummary = () => {
 
-  return <View className='View summary'>
-    <header>
+  return <View className='ViewSummary'>
+    <div className='view-header'>
       <div className='title'>Summary</div>
       <Button>+</Button>
-    </header>
+    </div>
   </View>;
 };
 

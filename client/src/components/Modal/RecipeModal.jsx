@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {useDebounce} from '../../hooks/useDebounce';
-import {getDisplayNameFromIngredient} from '../../util/IngredientFormat';
+import {getDisplayNameFromRecipeIngredient} from '../../util/IngredientFormat';
 import Button from '../Button/Button';
 import Modal from './Modal';
 
@@ -73,13 +73,13 @@ const RecipeModal = ({outputItem, closeModal, onConfirm}) => {
           <tbody>
             {(data || []).map((e) => {
               return <tr className='clickable' key={e.id} onClick={() => {
-                onConfirm();
+                onConfirm(e);
                 closeModal();
                 setSearchInputValue('');
               }}>
                 <td>{e.type}</td>
-                <td>{e.inputs.map(getDisplayNameFromIngredient).join(' + ')}</td>
-                <td>{e.outputs.map(getDisplayNameFromIngredient).join(' + ')}</td>
+                <td>{e.inputs.map(getDisplayNameFromRecipeIngredient).join(' + ')}</td>
+                <td>{e.outputs.map(getDisplayNameFromRecipeIngredient).join(' + ')}</td>
               </tr>;
             })}
           </tbody>
