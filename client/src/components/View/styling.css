@@ -44,6 +44,7 @@
 
 .View.ViewTree .view-tree-node {
   display: flex;
+  justify-content: space-between;
   cursor: pointer;
 }
 
@@ -111,5 +112,30 @@
 
 .View.ViewSummary .view-summary-entry:hover {
   background-color: cornflowerblue;
+  color: white;
+}
+
+.View.ViewTree .view-tree-node > .remove-button {
+  cursor: pointer;
+  color: transparent;
+  margin-right: 2px;
+}
+
+.View.ViewTree .view-tree-node > .remove-button {
+  color: white;
+}
+
+.View.ViewTree .view-tree-node > .remove-button:hover {
+  border-radius: 4px;
+  color: #ff2b1d;
+}
+
+.View.ViewTree .view-tree-node > .remove-button:focus {
+  border-radius: 4px;
+  color: #ff2b1d;
+}
+
+.View.ViewTree .view-tree-node > .remove-button:active {
+  background-color: #ff2b1d;
   color: white;
 }

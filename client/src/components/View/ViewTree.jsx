@@ -1,14 +1,19 @@
 import React from 'react';
 import Button from '../Button/Button';
+import Icon from '../Icon/Icon';
 import View from './View';
 
-const ViewTree = ({onClickButton, onClickElement, recipeMapping, recipeTreeRoots}) => {
+const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping, recipeTreeRoots}) => {
 
   const list = [];
   const addInput = (ingredient, path) => {
-    list.push({...ingredient, path});
+    const entry = {...ingredient, path};
+    list.push(entry);
     const obj = recipeMapping[ingredient.id];
-    if (obj == null) return;
+    if (obj == null) {
+      entry.isLeaf = true;
+      return;
+    }
     const {recipe} = obj;
     if (recipe) {
       if (recipe.inputs) {
@@ -19,7 +24,7 @@ const ViewTree = ({onClickButton, onClickElement, recipeMapping, recipeTreeRoots
     }
   };
   Object.values(recipeTreeRoots || {}).forEach((ingredient) => {
-    addInput(ingredient);
+    addInput({...ingredient, isRoot: true});
   });
 
   return <View className='ViewTree'>
@@ -32,8 +37,13 @@ const ViewTree = ({onClickButton, onClickElement, recipeMapping, recipeTreeRoots
         const title = 'Click to add a recipe for ' + ingredient.name;
         return <div className='view-tree-node' key={ingredient.id} onClick={() => onClickElement(ingredient)}
                     title={title}>
-          <div>{ingredient.path}</div>
-          <div>{ingredient.name}</div>
+          <div>{(ingredient.path || '') + ingredient.name}</div>
+          {ingredient.isRoot ?
+            <Icon type='close' className='remove-button' title='Click to remove recipe'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemoveElement(ingredient.id);
+                  }}/> : null}
         </div>;
       })}
     </div>

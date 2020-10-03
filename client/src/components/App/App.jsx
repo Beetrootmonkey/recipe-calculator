@@ -16,7 +16,7 @@ const App = () => {
   const [recipeTreeRoots, setRecipeTreeRoots] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.TREE_ROOTS)) || {});
 
   useEffect(() => localStorage.setItem(LocalStorageKeys.RECIPE_MAPPING, JSON.stringify(recipeMapping)), [recipeMapping]);
-
+  useEffect(() => localStorage.setItem(LocalStorageKeys.TREE_ROOTS, JSON.stringify(recipeTreeRoots)), [recipeTreeRoots]);
 
   let ingredientModal = null;
   if (ingredientModalData) {
@@ -48,16 +48,21 @@ const App = () => {
         <ViewMapping onClickButton={() => setIngredientModalData(CreationIntent.CREATE_MAPPING)}
                      recipeMapping={recipeMapping}
                      onRemoveElement={(ingredientId) => setRecipeMapping((state) => {
-                         const newState = {...state};
-                         delete newState[ingredientId];
-                         return newState;
-                       })}/>
+                       const newState = {...state};
+                       delete newState[ingredientId];
+                       return newState;
+                     })}/>
         <ViewTree onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                   onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                  recipeTreeRoots={recipeTreeRoots}/>
+                  recipeTreeRoots={recipeTreeRoots}
+                  onRemoveElement={(ingredientId) => setRecipeTreeRoots((state) => {
+                    const newState = {...state};
+                    delete newState[ingredientId];
+                    return newState;
+                  })}/>
         <ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
-                  onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                  recipeTreeRoots={recipeTreeRoots}/>
+                     onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
+                     recipeTreeRoots={recipeTreeRoots}/>
         {/*<ViewInstructions/>*/}
       </div>
     </div>
