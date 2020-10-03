@@ -14,20 +14,33 @@ router.get('/', function (req, res, next) {
   const outputItemId = req.query.outputItemId;
   const inputItemSearch = req.query.inputItemSearch ? req.query.inputItemSearch.toLowerCase() : '';
 
-  const response = [];
+  const total = [];
   data.recipes.forEach((recipeGroup) => {
     recipeGroup.recipeList.forEach((recipe) => {
       if (Object.keys(recipe.outputs).find((key) => key === outputItemId)) {
-        response.push({
+        total.push({
           ...recipe,
           inputs: Object.entries(recipe.inputs).map(getIngredientWithNameAndType),
-          outputs: Object.entries(recipe.outputs).map(getIngredientWithNameAndType)
+          outputs: Object.entries(recipe.outputs).map(getIngredientWithNameAndType),
+          type: recipeGroup.title + (recipe.voltageLevel ? ' (' + recipe.voltageLevel + ')' : '')
         });
       }
     });
   });
 
-  res.json(response.filter((recipe) => recipe.inputs.map((input) => input.name).join(' + ').toLowerCase().includes(inputItemSearch)).slice(0, 100));
+  const filtered = total.filter((recipe) => recipe.inputs.map((input) => input.name)
+    .join(' + ')
+    .toLowerCase()
+    .includes(inputItemSearch));
+  const shown = filtered.slice(0, 100);
+
+  res.json({
+    data: shown, info: {
+      total: total.length,
+      filtered: filtered.length,
+      shown: shown.length
+    }
+  });
 });
 
 module.exports = router;

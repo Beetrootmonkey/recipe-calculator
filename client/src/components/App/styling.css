@@ -52,3 +52,7 @@ h3 {
 th {
   text-align: start;
 }
+
+.clickable {
+  cursor: pointer;
+}

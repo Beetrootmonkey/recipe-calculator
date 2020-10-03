@@ -195,10 +195,6 @@ h3 {
   padding-bottom: 8px;
 }
 
-.App .modal-content > .modal-body > .body-top > .item-input-search-input {
-  margin-right: 8px;
-}
-
 .App .modal-content > .modal-body > .item-list {
   flex: 1 1 auto;
   overflow-y: scroll;

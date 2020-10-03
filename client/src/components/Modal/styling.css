@@ -48,20 +48,34 @@
   /*justify-content: flex-end;*/
 }
 
-.ItemModal {
+.IngredientModal {
   width: 600px;
   height: 700px;
 }
 
-.ItemModal > .modal-body > .body-top {
+.RecipeModal {
+  width: 1200px;
+  height: 700px;
+}
+
+.Modal > .modal-body > .body-top {
   padding-bottom: 8px;
 }
 
-.ItemModal > .modal-body > .body-top > input {
+.Modal > .modal-body > .body-top > .search-input {
   margin-right: 8px;
 }
-.ItemModal .ingredients {
+.Modal .content-list {
   margin-right: -8px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.Modal .content-list > table {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+.Modal .content-list tr:hover {
+  background-color: cornflowerblue;
 }

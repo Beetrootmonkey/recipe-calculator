@@ -2,12 +2,12 @@ import React from 'react';
 import Button from '../Button/Button';
 import View from './View';
 
-const ViewTree = () => {
+const ViewTree = ({onClickButton}) => {
 
   return <View className='View tree'>
     <header>
       <div className='title'>Tree</div>
-      <Button>+</Button>
+      <Button onClick={onClickButton}>+</Button>
     </header>
   </View>;
 };

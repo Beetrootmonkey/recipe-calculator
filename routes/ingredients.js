@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
   const filtered = total.filter((ingredient) => ingredient.name.toLowerCase().includes(inputItemSearch));
   const shown = filtered.slice(0, 100);
   res.json({
-    ingredients: shown,
+    data: shown,
     info: {
       total: total.length,
       filtered: filtered.length,
