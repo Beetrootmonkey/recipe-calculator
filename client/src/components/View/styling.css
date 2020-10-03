@@ -1,0 +1,41 @@
+.View {
+  background-color: white;
+  padding: 8px;
+  padding-right: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.View.mapping {
+  flex: 1 1;
+  border-right: #e1e1e1 1px solid;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.View.tree {
+  flex: 2 2;
+  border-right: #e1e1e1 1px solid;
+}
+
+.View.summary {
+  flex: 1 1;
+  border-right: #e1e1e1 1px solid;
+}
+
+.View.instructions {
+  flex: 1 1;
+  border-right: #e1e1e1 1px solid;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.View > header {
+  display: flex;
+  padding-right: 8px;
+}
+
+.View > header > .title {
+  flex: 1;
+}

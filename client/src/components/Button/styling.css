@@ -1,0 +1,30 @@
+.Button {
+  /*padding: 1px 0px 1px 0px;*/
+  background-color: white;
+  border: #e1e1e1 1px solid;
+  border-radius: 4px;
+  color: cornflowerblue;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.Button.size-big {
+  padding: 4px 12px 4px 12px;
+  border-radius: 2px;
+}
+
+.Button:hover {
+  outline: cornflowerblue auto 1px;
+  border: cornflowerblue 1px solid;
+}
+
+.Button:active {
+  background-color: cornflowerblue;
+  color: white;
+  border-color: cornflowerblue;
+}
+
+.Button:focus {
+  outline: cornflowerblue auto 1px
+}
