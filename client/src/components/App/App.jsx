@@ -45,7 +45,12 @@ const App = () => {
     <div className='content'>
       <div className='body'>
         <ViewMapping onClickButton={() => setIngredientModalData(CreationIntent.CREATE_MAPPING)}
-                     recipeMapping={recipeMapping}/>
+                     recipeMapping={recipeMapping}
+                     onRemoveElement={(ingredientId) => setRecipeMapping((state) => {
+                         const newState = {...state};
+                         delete newState[ingredientId];
+                         return newState;
+                       })}/>
         <ViewTree onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                   onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
                   recipeTreeRoots={recipeTreeRoots}/>

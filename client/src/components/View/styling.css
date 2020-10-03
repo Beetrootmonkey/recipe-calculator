@@ -51,3 +51,41 @@
   background-color: cornflowerblue;
   color: white;
 }
+
+.View.ViewMapping .view-mapping-entry {
+  display: flex;
+  justify-content: space-between;
+}
+
+.View.ViewMapping .view-mapping-entry-name {
+  cursor: help;
+}
+
+.View.ViewMapping .view-mapping-entry:hover {
+  background-color: cornflowerblue;
+  color: white;
+}
+
+.View.ViewMapping .view-mapping-entry > .remove-button {
+  cursor: pointer;
+  color: transparent;
+}
+
+.View.ViewMapping .view-mapping-entry:hover > .remove-button {
+  color: white;
+}
+
+.View.ViewMapping .view-mapping-entry > .remove-button:hover {
+  border-radius: 4px;
+  color: #ff2b1d;
+}
+
+.View.ViewMapping .view-mapping-entry > .remove-button:focus {
+  border-radius: 4px;
+  color: #ff2b1d;
+}
+
+.View.ViewMapping .view-mapping-entry > .remove-button:active {
+  background-color: #ff2b1d;
+  color: white;
+}
