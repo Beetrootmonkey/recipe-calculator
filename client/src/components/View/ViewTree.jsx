@@ -87,7 +87,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
                         }));
                       }}/>
               : '     '}
-            {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/> : null}
+            <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/>
             {ingredient.name}
             {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
           </div>

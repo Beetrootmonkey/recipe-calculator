@@ -177,6 +177,10 @@
   color: white;
 }
 
+.ViewInstructions .view-entry > div {
+  width: 100%;
+}
+
 .ViewInstructions .view-entry small {
   font-size: 12px;
   color: #969696;

@@ -76,7 +76,7 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
                 setSearchInputValue('');
               }}>
                 <td>{e.mod || IngredientTypes[e.type]}</td>
-                <td className='image'>{e.type === 'ITEM' ? <img src={'/icons/' + e.name} alt='' width="32" height="32"/> : null}</td>
+                <td className='image'><img src={'/icons/' + e.name} alt='' width="32" height="32"/></td>
                 <td>{e.name}</td>
               </tr>;
             })}

@@ -4,24 +4,30 @@ var router = express.Router();
 var fs = require('fs');
 var path = require('path');
 
-router.get('/:name', function (req, res, next) {
-  var options = {
-    root: path.join(__dirname, '../icons'),
-    dotfiles: 'deny',
-    headers: {
-      'x-timestamp': Date.now(),
-      'x-sent': true
-    }
-  };
+const bufferFile = relPath => {
+  return fs.readFileSync(path.join(__dirname, relPath));
+};
 
-  const fileName = req.params.name + '.png';
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      next(err);
-    } else {
-      console.log('Sent:', fileName);
+router.get('/:imgName', function (req, res, next) {
+  console.log('/icons');
+  try {
+    if (!req.params.imgName) {
+      res.status(400).send('Need to provide an image id!');
+      return;
     }
-  });
+
+    try {
+      const file = bufferFile('../icons/' + req.params.imgName + '.png');
+      res.send(file);
+    } catch (e) {
+      const file = bufferFile('../icons/_default_.png');
+      res.send(file);
+    }
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('An error occurred');
+  }
 });
 
 module.exports = router;
