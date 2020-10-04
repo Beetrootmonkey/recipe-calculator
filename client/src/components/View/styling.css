@@ -72,6 +72,10 @@
   color: white;
 }
 
+.View.ViewTree .view-entry .icon-button {
+  vertical-align: bottom;
+}
+
 .View.ViewMapping .view-entry {
   display: flex;
   justify-content: space-between;
@@ -86,7 +90,7 @@
   color: white;
 }
 
-.View .view-entry > .icon-button {
+.View .view-entry .icon-button {
   cursor: pointer;
   /*color: transparent;*/
   color: #969696;
@@ -97,26 +101,26 @@
   height: 20px;
 }
 
-.View .view-entry:hover > .icon-button {
+.View .view-entry:hover .icon-button {
   border-radius: 4px;
   color: white;
 }
 
-.View .view-entry > .icon-button:hover {
+.View .view-entry .icon-button:hover {
   color: white;
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.View .view-entry > .icon-button:active {
+.View .view-entry .icon-button:active {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-.View .view-entry > .icon-button:hover.error {
+.View .view-entry .icon-button:hover.error {
   color: #ff2b1d;
   background-color: rgba(255, 43, 29, 0.2);
 }
 
-.View .view-entry > .icon-button:active.error {
+.View .view-entry .icon-button:active.error {
   background-color: rgba(255, 43, 29, 0.4);
 }
 

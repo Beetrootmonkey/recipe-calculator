@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import LocalStorageKeys from '../../util/LocalStorageKeys';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
 import View from './View';
@@ -6,37 +7,48 @@ import View from './View';
 const NodeTypes = {
   ROOT: 'Root',
   LEAF: 'Leaf',
-  INTERMEDIATE: 'Intermediate'
+  INTERMEDIATE: 'Intermediate',
+  STUMP: 'Stump'
 };
 
 const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping, recipeTreeRoots}) => {
+  const [nodesClosedState, setNodesClosedState] = useState(JSON.parse(window.localStorage.getItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE)) || {});
+  // TODO: Nur mittelmäßig geil, dass die Einträge der selben Zutat sich immer alle auf einmal öffnen/schließen
+  useEffect(() => localStorage.setItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE, JSON.stringify(nodesClosedState)), [nodesClosedState]);
 
-  const registeredIngredients = {};
   const list = [];
-  const addInput = (ingredient, path) => {
+  const addInput = (ingredient, path, registeredIngredients = {}) => {
     const entry = {...ingredient, path};
     list.push(entry);
     const obj = recipeMapping[ingredient.id];
     if (obj == null) {
-      if (entry.nodeType == null) {
+      if (entry.nodeType !== NodeTypes.ROOT) {
         entry.nodeType = NodeTypes.LEAF;
+      } else {
+        entry.nodeType = NodeTypes.STUMP;
       }
       return;
     }
 
-    if (registeredIngredients[ingredient.id]) {
-      // Has been used before
-      return;
-    }
-    registeredIngredients[ingredient.id] = ingredient;
-
     const {recipe} = obj;
     if (recipe) {
       entry.recipeType = recipe.type;
+
+      if (registeredIngredients[ingredient.id]) {
+        // Has been used before
+        return;
+      }
+
+      registeredIngredients[ingredient.id] = ingredient;
+      if (nodesClosedState[ingredient.id]) {
+        return;
+      }
+
       if (recipe.inputs) {
-        recipe.inputs.forEach((input) => addInput({...input, nodeType: NodeTypes.INTERMEDIATE}, (path == null
-          ? '└─    '
-          : '      ') + (path || '')));
+        recipe.inputs.forEach((input) => addInput({
+          ...input,
+          nodeType: NodeTypes.INTERMEDIATE
+        }, '      ' + (path || ''), registeredIngredients));
       } else {
         console.error('Found recipe with no inputs:', recipe);
       }
@@ -58,10 +70,23 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     <div className='view-body'>
       {list.map((ingredient) => {
         const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
-        return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id} onClick={() => onClickElement(ingredient)}
+        return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id}
+                    onClick={() => onClickElement(ingredient)}
                     title={title}>
           <div>
             {ingredient.path ? <small>{ingredient.path}</small> : null}
+            {![NodeTypes.LEAF, NodeTypes.STUMP].includes(ingredient.nodeType)
+              ? <Icon type={nodesClosedState[ingredient.id] ? 'chevron_right' : 'expand_more'}
+                      className='icon-button'
+                      title='Click see more'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNodesClosedState((state) => ({
+                          ...state,
+                          [ingredient.id]: !nodesClosedState[ingredient.id]
+                        }));
+                      }}/>
+              : '     '}
             {ingredient.name}
             {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
           </div>
