@@ -7,7 +7,7 @@ import View from './View';
 
 const NodeTypes = {
   ROOT: 'Root',
-  LEAF: 'Leaf',
+  LEAF: 'Ingredients',
   INTERMEDIATE: 'Intermediate'
 };
 
@@ -39,7 +39,8 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
       const totalOutput = factor * outputAmount;
       if (totalOutput !== neededAmount) {
-        entry.info = '+' + (totalOutput - neededAmount) + ' extra';
+        const type = getUnitFromIngredientType(ingredient.type);
+        entry.info = '+' + (totalOutput - neededAmount) + (type ? ' ' + type : '') + ' extra';
       }
 
       if (recipe.inputs) {
@@ -69,7 +70,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       return 1;
     }
     return 0;
-  });
+  }).reverse();
 
   const groups = {};
   sortedList.forEach((ingredient) => {

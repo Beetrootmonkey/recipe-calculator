@@ -69,6 +69,7 @@
   margin-right: -8px;
   overflow-y: scroll;
   overflow-x: hidden;
+  flex: 1;
 }
 
 .Modal .content-list > table {
@@ -98,7 +99,7 @@
   color: white;
 }
 
-.Modal.SummaryModal .modal-footer {
+.Modal .modal-footer {
   display: flex;
   justify-content: space-between;
 }

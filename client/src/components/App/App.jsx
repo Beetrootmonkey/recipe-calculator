@@ -35,23 +35,28 @@ const App = () => {
   let recipeModal = null;
   if (recipeModalData) {
     recipeModal = <RecipeModal outputItem={recipeModalData} closeModal={() => setRecipeModalData(null)}
-                               onConfirm={(recipe) => setRecipeMapping((state) => ({
-                                 ...state,
-                                 [recipeModalData.id]: {ingredient: recipeModalData, recipe}
-                               }))} chosenRecipe={recipeMapping[recipeModalData.id]}/>;
+                               onConfirm={(recipe) => setRecipeMapping((state) => {
+                                 const newState = {...state};
+                                 if (recipe == null) {
+                                   delete newState[recipeModalData.id];
+                                   return newState;
+                                 }
+                                 newState[recipeModalData.id] = {ingredient: recipeModalData, recipe}
+                                 return newState;
+                               })} chosenRecipe={recipeMapping[recipeModalData.id]}/>;
   }
 
   return <div className="App">
     <Navbar title='Recipe Calculator'/>
     <div className='content'>
       <div className='body'>
-        <ViewMapping onClickButton={() => setIngredientModalData(CreationIntent.CREATE_MAPPING)}
-                     recipeMapping={recipeMapping}
-                     onRemoveElement={(ingredientId) => setRecipeMapping((state) => {
-                       const newState = {...state};
-                       delete newState[ingredientId];
-                       return newState;
-                     })}/>
+        {/*<ViewMapping onClickButton={() => setIngredientModalData(CreationIntent.CREATE_MAPPING)}*/}
+        {/*             recipeMapping={recipeMapping}*/}
+        {/*             onRemoveElement={(ingredientId) => setRecipeMapping((state) => {*/}
+        {/*               const newState = {...state};*/}
+        {/*               delete newState[ingredientId];*/}
+        {/*               return newState;*/}
+        {/*             })}/>*/}
         <ViewTree onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                   onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
                   recipeTreeRoots={recipeTreeRoots}

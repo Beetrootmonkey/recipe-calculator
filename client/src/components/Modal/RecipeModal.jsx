@@ -113,6 +113,12 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
         setSearchInputValue('');
       }}>Close
       </Button>
+      {chosenRecipe != null ? <Button size='big' onClick={() => {
+        closeModal();
+        setSearchInputValue('');
+        onConfirm(null);
+      }}>No recipe
+      </Button> : null}
     </div>
   </Modal>;
 };
