@@ -15,12 +15,19 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   const [modalData, setModalData] = useState(null);
 
   const ingredientAmounts = {};
+  const ingredientMaxDepths = {};
   const list = [];
   const addInput = (ingredient) => {
     const entry = {...ingredient};
     if (ingredientAmounts[ingredient.id] == null) {
       list.push(entry);
     }
+    if (ingredientMaxDepths[ingredient.id] == null) {
+      ingredientMaxDepths[ingredient.id] = entry.depth;
+    } else {
+      ingredientMaxDepths[ingredient.id] = Math.max(ingredientMaxDepths[ingredient.id], entry.depth);
+    }
+
     ingredientAmounts[ingredient.id] = (ingredientAmounts[ingredient.id] || 0) + (ingredient.amount || 0);
     const obj = recipeMapping[ingredient.id];
     if (obj == null) {
@@ -36,18 +43,29 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       const factor = Math.ceil(neededAmount / outputAmount);
 
       if (recipe.inputs) {
-        recipe.inputs.forEach((input) => addInput({...input, nodeType: NodeTypes.INTERMEDIATE, factor}));
+        recipe.inputs.forEach((input) => addInput({
+          ...input,
+          nodeType: NodeTypes.INTERMEDIATE,
+          factor,
+          depth: entry.depth + 1
+        }));
       } else {
         console.error('Found recipe with no inputs:', recipe);
       }
     }
   };
   Object.values(recipeTreeRoots || {}).forEach((ingredient) => {
-    addInput({...ingredient, nodeType: NodeTypes.ROOT});
+    addInput({...ingredient, nodeType: NodeTypes.ROOT, depth: 0});
   });
   const sortedList = list.sort((a, b) => {
     if (a.nodeType === b.nodeType) {
-      return a.name < b.name ? -1 : 1;
+      if (ingredientMaxDepths[a.id] === ingredientMaxDepths[b.id]) {
+        return a.name < b.name ? -1 : 1;
+      } else if (ingredientMaxDepths[a.id] < ingredientMaxDepths[b.id]) {
+        return -1;
+      } else {
+        return 1;
+      }
     }
     if (a.nodeType === NodeTypes.ROOT) {
       return -1;
@@ -135,6 +153,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                   <small>{amount}</small>
                   {info ? <small>{info}</small> : null}
                   {name}
+                  {/*{' ' + ingredientMaxDepths[ingredient.id]}*/}
                   {recipe ? <small>{'via ' + recipe.type}</small> : null}
                 </span>
                 {ingredient.nodeType === NodeTypes.ROOT ?
