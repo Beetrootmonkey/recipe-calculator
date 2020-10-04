@@ -40,9 +40,7 @@
 }
 
 .modal-backdrop > .Modal > .modal-footer {
-  border-top-color: #e1e1e1;
-  border-top-width: 1px;
-  border-top-style: solid;
+  border-top: #e1e1e1 1px solid;
   padding: 8px;
   display: flex;
   /*justify-content: flex-end;*/
@@ -53,6 +51,16 @@
   height: 700px;
 }
 
+.Modal.IngredientModal img {
+  margin-bottom: -2px;
+  margin-right: 2px;
+}
+
+.Modal.RecipeModal img {
+  margin-bottom: -2px;
+  margin-right: 2px;
+}
+
 .RecipeModal {
   width: 1200px;
   height: 700px;
@@ -60,6 +68,7 @@
 
 .Modal > .modal-body > .body-top {
   padding-bottom: 8px;
+  border-bottom: #e1e1e1 1px solid;
 }
 
 .Modal > .modal-body > .body-top > .search-input {

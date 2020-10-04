@@ -121,6 +121,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                         title={title}>
               <div>
                 <small>{amount}</small>
+                {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} width="24" height="24"/> : null}
                 {name}
                 {ingredient.info ? <small>{ingredient.info}</small> : null}
               </div>

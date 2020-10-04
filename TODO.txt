@@ -1,0 +1,2 @@
+- Load icons via JS, not via HTML
+-

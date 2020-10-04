@@ -1,6 +1,6 @@
 const recipesRouter = require('./routes/recipes');
 const ingredientsRouter = require('./routes/ingredients');
-const ingredientNamesRouter = require('./routes/ingredientNames');
+const iconsRouter = require('./routes/icons');
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -14,4 +14,4 @@ app.get('/express_backend', (req, res) => {
 });
 app.use('/recipes', recipesRouter);
 app.use('/ingredients', ingredientsRouter);
-app.use('/ingredientNames', ingredientNamesRouter);
+app.use('/icons', iconsRouter);

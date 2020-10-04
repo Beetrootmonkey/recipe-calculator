@@ -94,11 +94,13 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
                 <td>{e.inputs.map((ingredient) => <span className='ingredient'
                                                         title={getTitleForIngredient(ingredient)}>
                   <small>{ingredient.amount + '' + getUnitFromIngredientType(ingredient.type)}</small>
+                  {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} width="16" height="16"/> : null}
                   <span>{ingredient.name}</span>
                 </span>)}</td>
                 <td>{e.outputs.map((ingredient) => <span className='ingredient'
                                                          title={getTitleForIngredient(ingredient)}>
                   <small>{ingredient.amount + '' + getUnitFromIngredientType(ingredient.type)}</small>
+                  {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} width="16" height="16"/> : null}
                   <span>{ingredient.name}</span>
                 </span>)}</td>
               </tr>;

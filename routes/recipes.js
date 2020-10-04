@@ -11,6 +11,7 @@ const getIngredientWithNameAndType = ([id, amount]) => {
 };
 
 router.get('/', function (req, res, next) {
+  console.log('/recipes');
   const outputItemId = req.query.outputItemId;
   const inputItemSearch = req.query.inputItemSearch ? req.query.inputItemSearch.toLowerCase() : '';
 
