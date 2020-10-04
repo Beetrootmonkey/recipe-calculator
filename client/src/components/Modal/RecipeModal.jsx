@@ -64,7 +64,12 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
     }
   }
 
-  return <Modal className='RecipeModal'>
+  return <Modal className='RecipeModal' onKeyDown={(e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      setSearchInputValue('');
+    }
+  }}>
     <div className='modal-header'><h2>{title}</h2></div>
     <div className='modal-body'>
       <div className='body-top'>
@@ -91,18 +96,24 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
                 setSearchInputValue('');
               }}>
                 <td>{e.type}</td>
-                <td>{e.inputs.map((ingredient) => <span className='ingredient'
-                                                        title={getTitleForIngredient(ingredient)}>
-                  <small>{ingredient.amount + '' + getUnitFromIngredientType(ingredient.type)}</small>
-                  <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
-                  <span>{ingredient.name}</span>
-                </span>)}</td>
-                <td>{e.outputs.map((ingredient) => <span className='ingredient'
-                                                         title={getTitleForIngredient(ingredient)}>
-                  <small>{ingredient.amount + '' + getUnitFromIngredientType(ingredient.type)}</small>
-                  <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
-                  <span>{ingredient.name}</span>
-                </span>)}</td>
+                <td>{e.inputs.map((ingredient) => {
+                  const unit = getUnitFromIngredientType(ingredient.type);
+                  return <span key={ingredient.id} className='ingredient'
+                               title={getTitleForIngredient(ingredient)}>
+                    <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small>
+                    <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
+                    <span>{ingredient.name}</span>
+                  </span>;
+                })}</td>
+                <td>{e.outputs.map((ingredient) => {
+                  const unit = getUnitFromIngredientType(ingredient.type);
+                  return <span className='ingredient'
+                               title={getTitleForIngredient(ingredient)}>
+                    <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small>
+                    <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
+                    <span>{ingredient.name}</span>
+                  </span>;
+                })}</td>
               </tr>;
             })}
           </tbody>

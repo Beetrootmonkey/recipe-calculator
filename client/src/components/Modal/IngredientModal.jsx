@@ -51,7 +51,13 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
     }
   }
 
-  return <Modal className='IngredientModal'>
+  return <Modal className='IngredientModal' onKeyDown={(e) => {
+    console.log('KEY', e.key, e.key === 'Escape');
+    if (e.key === 'Escape') {
+      closeModal();
+      setSearchInputValue('');
+    }
+  }}>
     <div className='modal-header'><h2>{title}</h2></div>
     <div className='modal-body'>
       <div className='body-top'>

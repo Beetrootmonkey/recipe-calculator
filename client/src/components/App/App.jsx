@@ -5,7 +5,6 @@ import IngredientModal from '../Modal/IngredientModal';
 import RecipeModal from '../Modal/RecipeModal';
 import Navbar from '../Navbar/Navbar';
 import ViewInstructions from '../View/ViewInstructions';
-import ViewSummary from '../View/ViewSummary';
 import ViewTree from '../View/ViewTree';
 import './styling.css';
 

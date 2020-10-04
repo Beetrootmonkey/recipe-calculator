@@ -23,7 +23,12 @@ const SummaryModal = ({ingredient, closeModal, onConfirm}) => {
     }
   }
 
-  return <Modal className={classes.join(' ')}>
+  return <Modal className={classes.join(' ')} onKeyDown={(e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      setInputValue('');
+    }
+  }}>
     <div className='modal-header'><h2>{title}</h2></div>
     <div className='modal-body'>
       <div className='body-top'>

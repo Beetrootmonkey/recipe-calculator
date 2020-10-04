@@ -109,3 +109,4 @@ dist
 client/src/.idea/
 data.db
 icons/
+mod_content/
