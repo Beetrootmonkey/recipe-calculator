@@ -45,7 +45,7 @@
 
 .View > .view-header > .title .help-icon {
   color: #969696;
-  font-size: 16px;
+  font-size: 24px;
   cursor: help;
   vertical-align: middle;
 }
@@ -174,12 +174,12 @@
 .ViewInstructions .view-entry {
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
+  cursor: default;
 }
 
 .ViewInstructions .view-entry:hover {
-  background-color: cornflowerblue;
-  color: white;
+  /*background-color: cornflowerblue;*/
+  /*color: white;*/
 }
 
 .ViewInstructions .view-entry > div {
@@ -194,7 +194,7 @@
 }
 
 .ViewInstructions .view-entry:hover small {
-  color: white;
+  /*color: white;*/
 }
 
 .ViewInstructions .ingredient {
@@ -204,7 +204,13 @@
 }
 
 .ViewInstructions .ingredient:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  /*background-color: rgba(255, 255, 255, 0.4);*/
+  background-color: rgba(100, 149, 237, 0.6);
+  color: white;
+}
+
+.ViewInstructions .ingredient:hover small {
+  color: white;
 }
 
 .ViewInstructions .view-entry-title {

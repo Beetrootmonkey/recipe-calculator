@@ -1,2 +1,9 @@
-- Load icons via JS, not via HTML
--
+- Icons via JS laden (und cachen)
+- Anzahl von Zutaten ändern
+- Checkboxen
+- Dark mode
+- 'Instructions' basierend auf 'Summary' und Rezepten
+- Tooltips via Klicks
+- Fehlende Icons
+- Tiefe => Reihenfolge richtig kalkulieren
+- Output-Chancen
