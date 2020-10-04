@@ -8,7 +8,7 @@ const ViewMapping = ({onClickButton, recipeMapping, onRemoveElement}) => {
 
   return <View className='ViewMapping'>
     <div className='view-header'>
-      <div className='title'>Mapping<small>
+      <div className='title'><h2>Mapping</h2><small>
         <Icon type='help' className='help-icon'
               title={'Add default recipes that should be used to craft a given item. You can either add a mapping ' +
               '(output item + recipe) manually, or via clicking on an item in the other views. Mappings can be removed anytime.'}/></small>

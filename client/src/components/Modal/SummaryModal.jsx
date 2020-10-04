@@ -1,6 +1,5 @@
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import {useDebounce} from '../../hooks/useDebounce';
-import CreationIntent from '../../util/CreationIntent';
 import getCompactAmount from '../../util/getCompactAmount';
 import Button from '../Button/Button';
 import Modal from './Modal';
@@ -32,7 +31,7 @@ const SummaryModal = ({ingredient, closeModal, onConfirm}) => {
                onChange={(e) => setInputValue(e.target.value.toLowerCase())}/>
         {infoText}
       </div>
-        Content
+      Content
     </div>
     <div className='modal-footer'>
       <Button size='big' onClick={() => {

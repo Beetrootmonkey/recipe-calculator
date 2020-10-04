@@ -76,7 +76,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       groups[ingredient.nodeType] = [];
     }
     groups[ingredient.nodeType].push(ingredient);
-  })
+  });
 
   let modal;
   if (modalData) {
@@ -84,11 +84,9 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                           onConfirm={(amount) => onSetAmount(modalData, amount)}/>;
   }
 
-  console.log('groups', groups);
-
   return <View className='ViewSummary'>
     <div className='view-header'>
-      <div className='title'>Summary<small>
+      <div className='title'><h2>Summary</h2><small>
         <Icon type='help' className='help-icon'
               title={'Items here are automatically added when the tree view is updated, which in turn is updated when you add/change mappings.'}/></small>
       </div>
@@ -112,7 +110,9 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
             amount *= factor;
 
             const unit = getUnitFromIngredientType(ingredient.type);
-            const title = `Amount: ${amount + ' ' + unit} | Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping`;
+            const title = `Amount: ${amount + ' ' + unit} | Click to ${recipeMapping[ingredient.id]
+              ? 'change'
+              : 'add a'} mapping`;
             amount = getCompactAmount(amount, ingredient.type);
 
 
@@ -121,7 +121,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                         title={title}>
               <div>
                 <small>{amount}</small>
-                {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} width="24" height="24"/> : null}
+                {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/> : null}
                 {name}
                 {ingredient.info ? <small>{ingredient.info}</small> : null}
               </div>

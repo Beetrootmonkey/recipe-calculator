@@ -4,7 +4,7 @@ import LocalStorageKeys from '../../util/LocalStorageKeys';
 import IngredientModal from '../Modal/IngredientModal';
 import RecipeModal from '../Modal/RecipeModal';
 import Navbar from '../Navbar/Navbar';
-import ViewMapping from '../View/ViewMapping';
+import ViewInstructions from '../View/ViewInstructions';
 import ViewSummary from '../View/ViewSummary';
 import ViewTree from '../View/ViewTree';
 import './styling.css';
@@ -41,7 +41,7 @@ const App = () => {
                                    delete newState[recipeModalData.id];
                                    return newState;
                                  }
-                                 newState[recipeModalData.id] = {ingredient: recipeModalData, recipe}
+                                 newState[recipeModalData.id] = {ingredient: recipeModalData, recipe};
                                  return newState;
                                })} chosenRecipe={recipeMapping[recipeModalData.id]}/>;
   }
@@ -65,6 +65,9 @@ const App = () => {
                     delete newState[ingredientId];
                     return newState;
                   })}/>
+        <ViewInstructions onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
+                          onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
+                          recipeTreeRoots={recipeTreeRoots}/>
         <ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                      onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
                      recipeTreeRoots={recipeTreeRoots}
@@ -72,7 +75,6 @@ const App = () => {
                        ...state,
                        [ingredient.id]: {...ingredient, amount}
                      }))}/>
-        {/*<ViewInstructions/>*/}
       </div>
     </div>
     {ingredientModal}

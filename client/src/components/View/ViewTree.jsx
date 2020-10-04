@@ -60,7 +60,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
 
   return <View className='ViewTree'>
     <div className='view-header'>
-      <div className='title'>Tracked items<small>
+      <div className='title'><h2>Tracked items</h2><small>
         <Icon type='help' className='help-icon'
               title={'Add items that you want to track. Tracked items are represented as \'roots\' in this tree. ' +
               'You can choose how these items are crafted; you can even choose recipes for ingredients of recipes.'}/></small>
@@ -68,9 +68,9 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
       <Button onClick={onClickButton} title='Click to add an item'>+</Button>
     </div>
     <div className='view-body'>
-      {list.map((ingredient) => {
+      {list.map((ingredient, index) => {
         const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
-        return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id}
+        return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id + '-' + index}
                     onClick={() => onClickElement(ingredient)}
                     title={title}>
           <div>
@@ -87,7 +87,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
                         }));
                       }}/>
               : '     '}
-            {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} width="24" height="24"/> : null}
+            {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/> : null}
             {ingredient.name}
             {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
           </div>

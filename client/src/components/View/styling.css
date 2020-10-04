@@ -7,25 +7,26 @@
   flex-direction: column;
 }
 
-.View.ViewMapping {
+.ViewMapping {
   flex: 1 1;
   border-right: #e1e1e1 1px solid;
   /*border-top-left-radius: 2px;*/
   /*border-bottom-left-radius: 2px;*/
 }
 
-.View.ViewTree {
+.ViewTree {
+  /*flex: 2 2;*/
+  flex: 1 1;
+  border-right: #e1e1e1 1px solid;
+}
+
+.ViewSummary {
+  flex: 1 1;
+  border-right: #e1e1e1 1px solid;
+}
+
+.ViewInstructions {
   flex: 2 2;
-  border-right: #e1e1e1 1px solid;
-}
-
-.View.ViewSummary {
-  flex: 1 1;
-  border-right: #e1e1e1 1px solid;
-}
-
-.View.ViewInstructions {
-  flex: 1 1;
   border-right: #e1e1e1 1px solid;
   /*border-top-right-radius: 2px;*/
   /*border-bottom-right-radius: 2px;*/
@@ -39,53 +40,55 @@
 
 .View > .view-header > .title {
   flex: 1;
+  display: flex;
 }
 
 .View > .view-header > .title .help-icon {
   color: #969696;
   font-size: 16px;
   cursor: help;
+  vertical-align: middle;
 }
 
 .View > .view-body {
   overflow-x: hidden;
 }
 
-.View.ViewTree .view-entry {
+.ViewTree .view-entry {
   display: flex;
   justify-content: space-between;
   cursor: pointer;
 }
 
-.View.ViewTree .view-entry:hover {
+.ViewTree .view-entry:hover {
   background-color: cornflowerblue;
   color: white;
 }
 
-.View.ViewTree .view-entry small {
-  font-size: 10px;
+.ViewTree .view-entry small {
+  font-size: 12px;
   color: #969696;
   margin-left: 4px;
 }
 
-.View.ViewTree .view-entry:hover small {
+.ViewTree .view-entry:hover small {
   color: white;
 }
 
-.View.ViewTree .view-entry .icon-button {
+.ViewTree .view-entry .icon-button {
   vertical-align: bottom;
 }
 
-.View.ViewMapping .view-entry {
+.ViewMapping .view-entry {
   display: flex;
   justify-content: space-between;
 }
 
-.View.ViewMapping .view-entry {
+.ViewMapping .view-entry {
   cursor: default;
 }
 
-.View.ViewMapping .view-entry:hover {
+.ViewMapping .view-entry:hover {
   background-color: cornflowerblue;
   color: white;
 }
@@ -124,35 +127,35 @@
   background-color: rgba(255, 43, 29, 0.4);
 }
 
-.View.ViewSummary .view-entry {
+.ViewSummary .view-entry {
   display: flex;
   cursor: pointer;
   justify-content: space-between;
 }
 
-.View.ViewSummary .view-entry:hover {
+.ViewSummary .view-entry:hover {
   background-color: cornflowerblue;
   color: white;
 }
 
-.View.ViewSummary .view-entry small {
-  font-size: 10px;
+.ViewSummary .view-entry small {
+  font-size: 12px;
   color: #969696;
   margin-left: 4px;
   margin-right: 4px;
 }
 
-.View.ViewSummary .view-entry:hover small {
+.ViewSummary .view-entry:hover small {
   color: white;
 }
 
-.View.ViewSummary .view-summary-group {
+.ViewSummary .view-summary-group {
   font-weight: 600;
   border-bottom: #e1e1e1 1px solid;
   margin-top: 8px;
 }
 
-.View.ViewTree .view-entry.Root, .View.ViewTree .view-entry.Stump {
+.ViewTree .view-entry.Root, .ViewTree .view-entry.Stump {
   font-weight: 600;
   border-bottom: #e1e1e1 1px solid;
   margin-top: 8px;
@@ -161,4 +164,54 @@
 .View img {
   margin-bottom: -4px;
   margin-right: 2px;
+}
+
+.ViewInstructions .view-entry {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.ViewInstructions .view-entry:hover {
+  background-color: cornflowerblue;
+  color: white;
+}
+
+.ViewInstructions .view-entry small {
+  font-size: 12px;
+  color: #969696;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.ViewInstructions .view-entry:hover small {
+  color: white;
+}
+
+.ViewInstructions .ingredient {
+  background-color: rgba(100, 149, 237, 0.2);
+  border-radius: 2px;
+  margin-right: 4px;
+}
+
+.ViewInstructions .ingredient:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.ViewInstructions .view-entry .title {
+  font-weight: 600;
+  border-bottom: #e1e1e1 1px solid;
+  margin-top: 8px;
+}
+
+.ViewInstructions .view-entry .gather-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+
+.ViewInstructions .view-entry .gather-list .ingredient {
+  margin-top: 1px;
+  margin-bottom: 1px;
 }
