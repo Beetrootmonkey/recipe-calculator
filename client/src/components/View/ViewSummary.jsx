@@ -1,8 +1,14 @@
 import React from 'react';
-import {getDisplayNameFromRecipeIngredient, getUnitFromIngredientType} from '../../util/IngredientFormat';
+import {getUnitFromIngredientType} from '../../util/IngredientFormat';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
 import View from './View';
+
+const NodeTypes = {
+  ROOT: 'Root',
+  LEAF: 'Leaf',
+  INTERMEDIATE: 'Intermediate'
+};
 
 const ViewSummary = ({onClickButton, onClickElement, recipeMapping, recipeTreeRoots}) => {
 
@@ -12,41 +18,57 @@ const ViewSummary = ({onClickButton, onClickElement, recipeMapping, recipeTreeRo
     list.push(entry);
     const obj = recipeMapping[ingredient.id];
     if (obj == null) {
-      entry.isLeaf = true;
+      entry.nodeType = NodeTypes.LEAF;
       return;
     }
     const {recipe} = obj;
     if (recipe) {
       if (recipe.inputs) {
-        recipe.inputs.forEach((input) => addInput(input));
+        recipe.inputs.forEach((input) => addInput({...input, nodeType: NodeTypes.INTERMEDIATE}));
       } else {
         console.error('Found recipe with no inputs:', recipe);
       }
     }
   };
   Object.values(recipeTreeRoots || {}).forEach((ingredient) => {
-    addInput({...ingredient, isRoot: true});
+    addInput({...ingredient, nodeType: NodeTypes.ROOT});
+  });
+  const sortedList = list.sort((a, b) => {
+    if (a.nodeType === b.nodeType) {
+      return a.name < b.name ? -1 : 1;
+    }
+    if (a.nodeType === NodeTypes.ROOT) {
+      return -1;
+    }
+    if (b.nodeType === NodeTypes.ROOT) {
+      return 1;
+    }
+    if (a.nodeType === NodeTypes.INTERMEDIATE) {
+      return -1;
+    }
+    if (b.nodeType === NodeTypes.INTERMEDIATE) {
+      return 1;
+    }
   });
 
   return <View className='ViewSummary'>
     <div className='view-header'>
-      <div className='title'>Summary</div>
-      <Button onClick={onClickButton} title='Click to add an item'>+</Button>
+      <div className='title'>Summary<small>
+        <Icon type='help' className='help-icon'
+              title={'Items here are automatically added when the tree view is updated, which in turn is updated when you add/change mappings.'}/></small></div>
     </div>
     <div className='view-body'>
-      {list.map((ingredient) => {
+      {sortedList.map((ingredient) => {
         let name = ingredient.name;
         if (ingredient.amount != null) {
           name = ingredient.amount + getUnitFromIngredientType(ingredient.type) + ' ' + name;
         }
 
-        const title = 'Click to add a recipe for ' + ingredient.name;
+        const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
 
-        return <div className='view-summary-entry' key={ingredient.id} onClick={() => onClickElement(ingredient)}
+        return <div className={'view-summary-entry ' + ingredient.nodeType} key={ingredient.id} onClick={() => onClickElement(ingredient)}
                     title={title}>
-          <div>{name}</div>
-          {ingredient.isLeaf ? <div className='view-summary-entry-leaf'>LEAF</div> : null}
-          {ingredient.isRoot ? <div className='view-summary-entry-root'>ROOT</div> : null}
+          <div>{name}{ingredient.nodeType !== NodeTypes.INTERMEDIATE ? <small>{ingredient.nodeType}</small> : null}</div>
         </div>;
       })}
     </div>

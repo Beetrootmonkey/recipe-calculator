@@ -16,6 +16,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     }
     const {recipe} = obj;
     if (recipe) {
+      entry.recipeType = recipe.type;
       if (recipe.inputs) {
         recipe.inputs.forEach((input) => addInput(input, (path == null ? '└─    ' : '      ') + (path || '')));
       } else {
@@ -29,15 +30,24 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
 
   return <View className='ViewTree'>
     <div className='view-header'>
-      <div className='title'>Tree</div>
+      <div className='title'>Tree<small>
+        <Icon type='help' className='help-icon'
+              title={'Add items that you want to track. Tracked items are represented as \'roots\' in this tree. ' +
+              'You can choose how these items are crafted; you can even choose recipes for ingredients of recipes! ' +
+              'If you ever need to, you can simply remove a tracked item by clicking the corresponding x-button.'}/></small>
+      </div>
       <Button onClick={onClickButton} title='Click to add an item'>+</Button>
     </div>
     <div className='view-body'>
       {list.map((ingredient) => {
-        const title = 'Click to add a recipe for ' + ingredient.name;
+        const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
         return <div className='view-tree-node' key={ingredient.id} onClick={() => onClickElement(ingredient)}
                     title={title}>
-          <div>{(ingredient.path || '') + ingredient.name}</div>
+          <div>
+            {ingredient.path ? <small>{ingredient.path}</small> : null}
+            {ingredient.name}
+            {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
+          </div>
           {ingredient.isRoot ?
             <Icon type='close' className='remove-button' title='Click to remove recipe'
                   onClick={(e) => {
