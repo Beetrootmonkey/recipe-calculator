@@ -48,6 +48,10 @@
   cursor: help;
 }
 
+.View > .view-body {
+  overflow-x: hidden;
+}
+
 .View.ViewTree .view-entry {
   display: flex;
   justify-content: space-between;
@@ -140,6 +144,12 @@
 }
 
 .View.ViewSummary .view-summary-group {
+  font-weight: 600;
+  border-bottom: #e1e1e1 1px solid;
+  margin-top: 8px;
+}
+
+.View.ViewTree .view-entry.Root {
   font-weight: 600;
   border-bottom: #e1e1e1 1px solid;
   margin-top: 8px;

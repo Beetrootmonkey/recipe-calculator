@@ -111,7 +111,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
             amount *= factor;
 
             const unit = getUnitFromIngredientType(ingredient.type);
-            const title = `${amount + ' ' + unit} | Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
+            const title = `Amount: ${amount + ' ' + unit} | Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping`;
             amount = getCompactAmount(amount, ingredient.type);
 
 
