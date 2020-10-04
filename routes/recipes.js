@@ -6,7 +6,7 @@ const getIngredientById = (id) => data.ingredients[id];
 const getIngredientWithNameAndType = ([id, amount]) => {
   const ingredient = getIngredientById(id);
   return {
-    id, amount, name: ingredient ? ingredient.name : null, type: ingredient ? ingredient.type : null
+    id, amount, name: ingredient ? ingredient.name : null, type: ingredient ? ingredient.type : null, mod: ingredient.mod
   };
 };
 

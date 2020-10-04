@@ -1,13 +1,21 @@
 import React, {useCallback, useEffect} from 'react';
 import {useDebounce} from '../../hooks/useDebounce';
-import {getDisplayNameFromRecipeIngredient} from '../../util/IngredientFormat';
+import {getUnitFromIngredientType} from '../../util/IngredientFormat';
+import IngredientTypes from '../../util/IngredientTypes';
 import Button from '../Button/Button';
 import Modal from './Modal';
 
 const {useState} = require('react');
 
+const getTitleForIngredient = (ingredient) => {
+  let title = ingredient.id;
+  if (ingredient.mod) {
+    return ingredient.mod + ' | ' + title;
+  }
+  return IngredientTypes[ingredient.type] + ' | ' + title;
+};
+
 const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
-  const classes = ['Modal', 'RecipeModal'];
   const [searchInputValue, setSearchInputValue] = useState('');
   const searchValue = useDebounce(searchInputValue);
 
@@ -56,7 +64,7 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
     }
   }
 
-  return <Modal className={classes.join(' ')}>
+  return <Modal className='RecipeModal'>
     <div className='modal-header'><h2>{title}</h2></div>
     <div className='modal-body'>
       <div className='body-top'>
@@ -74,7 +82,8 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
             </tr>
           </thead>
           <tbody>
-            {[...chosenRecipe ? [chosenRecipe.recipe] : [], ...(data || []).filter((e) => chosenRecipe ? e.id !== chosenRecipe.recipe.id : true)].map((e) => {
+            {[...chosenRecipe ? [chosenRecipe.recipe] : [],
+              ...(data || []).filter((e) => chosenRecipe ? e.id !== chosenRecipe.recipe.id : true)].map((e) => {
               const isInUse = chosenRecipe ? e.id === chosenRecipe.recipe.id : false;
               return <tr className={'clickable' + (isInUse ? ' marked' : '')} key={e.id} onClick={() => {
                 onConfirm(e);
@@ -82,8 +91,16 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
                 setSearchInputValue('');
               }}>
                 <td>{e.type}</td>
-                <td>{e.inputs.map(getDisplayNameFromRecipeIngredient).join(' + ')}</td>
-                <td>{e.outputs.map(getDisplayNameFromRecipeIngredient).join(' + ')}</td>
+                <td>{e.inputs.map((ingredient) => <span className='ingredient'
+                                                        title={getTitleForIngredient(ingredient)}>
+                  <small>{ingredient.amount + '' + getUnitFromIngredientType(ingredient.type)}</small>
+                  <span>{ingredient.name}</span>
+                </span>)}</td>
+                <td>{e.outputs.map((ingredient) => <span className='ingredient'
+                                                         title={getTitleForIngredient(ingredient)}>
+                  <small>{ingredient.amount + '' + getUnitFromIngredientType(ingredient.type)}</small>
+                  <span>{ingredient.name}</span>
+                </span>)}</td>
               </tr>;
             })}
           </tbody>

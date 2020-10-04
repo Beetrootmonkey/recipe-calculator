@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import getCompactAmount from '../../util/getCompactAmount';
 import {getUnitFromIngredientType} from '../../util/IngredientFormat';
 import Icon from '../Icon/Icon';
 import SummaryModal from '../Modal/SummaryModal';
@@ -13,8 +14,14 @@ const NodeTypes = {
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
   const [modalData, setModalData] = useState(null);
 
+  const registeredIngredients = {};
   const list = [];
   const addInput = (ingredient) => {
+    if (registeredIngredients[ingredient.id]) {
+      // Has been used before
+      return;
+    }
+    registeredIngredients[ingredient.id] = ingredient;
     const entry = {...ingredient};
     list.push(entry);
     const obj = recipeMapping[ingredient.id];
@@ -32,7 +39,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
       const totalOutput = factor * outputAmount;
       if (totalOutput !== neededAmount) {
-        entry.info = ' (produces ' + totalOutput + ')';
+        entry.info = '+' + (totalOutput - neededAmount) + ' extra';
       }
 
       if (recipe.inputs) {
@@ -64,6 +71,14 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     return 0;
   });
 
+  const groups = {};
+  sortedList.forEach((ingredient) => {
+    if (!groups[ingredient.nodeType]) {
+      groups[ingredient.nodeType] = [];
+    }
+    groups[ingredient.nodeType].push(ingredient);
+  })
+
   let modal;
   if (modalData) {
     modal = <SummaryModal ingredient={modalData} closeModal={() => setModalData(null)}
@@ -78,42 +93,44 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       </div>
     </div>
     <div className='view-body'>
-      {sortedList.map((ingredient) => {
-        let name = ingredient.name;
-        if (ingredient.info) {
-          name += ingredient.info;
-        }
+      {Object.entries(groups).map(([group, ingredientList]) => {
+        return <div>
+          <div className='view-summary-group'>{group}</div>
+          {ingredientList.map((ingredient) => {
+            let name = ingredient.name;
 
-        let amount = ingredient.amount;
-        if (amount == null) {
-          amount = 1;
-        }
+            let amount = ingredient.amount;
+            if (amount == null) {
+              amount = 1;
+            }
 
-        let factor = ingredient.factor;
-        if (factor == null) {
-          factor = 1;
-        }
-        amount *= factor;
+            let factor = ingredient.factor;
+            if (factor == null) {
+              factor = 1;
+            }
+            amount *= factor;
 
-        const unit = getUnitFromIngredientType(ingredient.type);
-        amount = amount + (unit ? ' ' + unit : '');
+            const unit = getUnitFromIngredientType(ingredient.type);
+            const title = `${amount + ' ' + unit} | Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
+            amount = getCompactAmount(amount, ingredient.type);
 
-        const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
 
-        return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id}
-                    onClick={() => onClickElement(ingredient)}
-                    title={title}>
-          <div>
-            <small>{amount}</small>
-            {name}
-            {ingredient.nodeType !== NodeTypes.INTERMEDIATE ? <small>{ingredient.nodeType}</small> : null}
-          </div>
-          {ingredient.nodeType === NodeTypes.ROOT ?
-            <Icon type='edit' className='icon-button' title='Click to edit amount'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setModalData(ingredient);
-                  }}/> : null}
+            return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id}
+                        onClick={() => onClickElement(ingredient)}
+                        title={title}>
+              <div>
+                <small>{amount}</small>
+                {name}
+                {ingredient.info ? <small>{ingredient.info}</small> : null}
+              </div>
+              {ingredient.nodeType === NodeTypes.ROOT ?
+                <Icon type='edit' className='icon-button' title='Click to edit amount'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModalData(ingredient);
+                      }}/> : null}
+            </div>;
+          })}
         </div>;
       })}
       {modal}

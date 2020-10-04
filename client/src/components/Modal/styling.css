@@ -78,6 +78,7 @@
 
 .Modal .content-list tr:hover {
   background-color: cornflowerblue;
+  color: white;
 }
 
 .Modal .content-list tr.marked {
@@ -88,7 +89,26 @@
   background-color: cornflowerblue;
 }
 
+.Modal .content-list tr small {
+  color: #969696;
+  margin-right: 4px;
+}
+
+.Modal .content-list tr:hover small {
+  color: white;
+}
+
 .Modal.SummaryModal .modal-footer {
   display: flex;
   justify-content: space-between;
+}
+
+.Modal.RecipeModal .ingredient {
+  background-color: rgba(100, 149, 237, 0.2);
+  border-radius: 2px;
+  margin-right: 4px;
+}
+
+.Modal.RecipeModal .ingredient:hover {
+  background-color: rgba(255, 255, 255, 0.4);
 }

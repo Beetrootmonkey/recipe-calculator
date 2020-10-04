@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect} from 'react';
 import {useDebounce} from '../../hooks/useDebounce';
 import CreationIntent from '../../util/CreationIntent';
+import IngredientTypes from '../../util/IngredientTypes';
 import Button from '../Button/Button';
 import Modal from './Modal';
 
 const {useState} = require('react');
 
 const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
-  const classes = ['Modal', 'IngredientModal'];
   const [searchInputValue, setSearchInputValue] = useState('');
   const searchValue = useDebounce(searchInputValue);
 
@@ -51,7 +51,7 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
     }
   }
 
-  return <Modal className={classes.join(' ')}>
+  return <Modal className='IngredientModal'>
     <div className='modal-header'><h2>{title}</h2></div>
     <div className='modal-body'>
       <div className='body-top'>
@@ -74,7 +74,7 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
                 closeModal();
                 setSearchInputValue('');
               }}>
-                <td>{e.type}</td>
+                <td>{e.mod || IngredientTypes[e.type]}</td>
                 <td>{e.name}</td>
               </tr>;
             })}

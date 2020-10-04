@@ -1,7 +1,5 @@
-import IngredientTypes from './IngredientTypes';
-
 const getCompactAmount = (amount, ingredientType) => {
-  if (ingredientType === IngredientTypes.FLUID) {
+  if (ingredientType === 'FLUID') {
     if (amount < Math.pow(1000, 1)) {
       return amount + ' mB';
     } else if (amount < Math.pow(1000, 2)) {
@@ -12,9 +10,9 @@ const getCompactAmount = (amount, ingredientType) => {
       return ((amount / Math.pow(1000, 3)) + '').substr(0, 4) + ' MB';
     }
   }
-    const stacks = Math.floor(amount / 64);
-    const rest = amount - (stacks * 64);
-    return [stacks > 0 ? stacks + ' ' + (stacks > 1 ? 'Stacks' : 'Stack') : null, rest].filter((e) => e).join(' + ');
+  const stacks = Math.floor(amount / 64);
+  const rest = amount - (stacks * 64);
+  return [stacks > 0 ? stacks + ' ' + (stacks > 1 ? 'Stacks' : 'Stack') : null, rest].filter((e) => e).join(' + ');
 };
 
 export default getCompactAmount;

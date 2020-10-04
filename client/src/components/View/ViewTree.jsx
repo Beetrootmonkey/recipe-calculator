@@ -11,6 +11,7 @@ const NodeTypes = {
 
 const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping, recipeTreeRoots}) => {
 
+  const registeredIngredients = {};
   const list = [];
   const addInput = (ingredient, path) => {
     const entry = {...ingredient, path};
@@ -22,6 +23,13 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
       }
       return;
     }
+
+    if (registeredIngredients[ingredient.id]) {
+      // Has been used before
+      return;
+    }
+    registeredIngredients[ingredient.id] = ingredient;
+
     const {recipe} = obj;
     if (recipe) {
       entry.recipeType = recipe.type;
