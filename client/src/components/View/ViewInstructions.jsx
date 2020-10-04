@@ -80,27 +80,29 @@ const ViewInstructions = ({onClickElement, recipeMapping, recipeTreeRoots}) => {
       </div>
     </div>
     <div className='view-body'>
-      <div className='view-entry' key='gather-0'>
-        <div>
-          <div className='title'>[1] Gather: </div>
-          <div className='gather-list'>
-            {gatherList.map(({ingredient, depth}) => {
-              let factor = ingredient.factor;
-              if (factor == null) {
-                factor = 1;
-              }
+      <div key='gather-0'>
+        <div className='view-entry-title'>[1] Gather:</div>
+        <div className='gather-list'>
+          {gatherList.map(({ingredient, depth}) => {
+            let factor = ingredient.factor;
+            if (factor == null) {
+              factor = 1;
+            }
 
-              return <span className='ingredient' key={ingredient.id}
-                           onClick={() => onClickElement(ingredient)}
-                           title={getTitleForIngredient(ingredient)}>
+            return <span className='view-entry' key={ingredient.id}
+                         onClick={() => onClickElement(ingredient)}
+                         title={getTitleForIngredient(ingredient)}>
+              <span>
+                {ingredient.type === 'ITEM'
+                  ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/>
+                  : null}
                 {ingredient.amount
                   ? <small>{getCompactAmount(ingredient.amount * factor, ingredient.type)}</small>
                   : null}
-                {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/> : null}
                 <span>{ingredient.name}</span>
-                </span>;
-            })}
-          </div>
+                </span>
+            </span>;
+          })}
         </div>
       </div>
       {processList.map(({ingredient, recipe, depth}) => {
@@ -109,30 +111,42 @@ const ViewInstructions = ({onClickElement, recipeMapping, recipeTreeRoots}) => {
           factor = 1;
         }
 
-        return <div className={'view-entry'} key={ingredient.id}
+        return <div className={'view-entry'} key={recipe.id}
                     onClick={() => onClickElement(ingredient)}>
           <div>
-            <div className='title'>{'[' + (maxDepth - depth + 2) + '] ' + recipe.type}:</div>
+            <div className='view-entry-title'>{'[' + (maxDepth - depth + 2) + '] ' + recipe.type}:</div>
             <div>
-              <span>Input: </span>
-              {recipe.inputs.map((ingredient) => <span className='ingredient'
-                                                       title={getTitleForIngredient(ingredient)}>
+              <span className='process-list'>
+                <span>Input: </span>
+
+                {recipe.inputs.map((ingredient) => <span key={ingredient.id} className='ingredient'
+                                                         title={getTitleForIngredient(ingredient)}>
+                  {ingredient.type === 'ITEM'
+                    ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/>
+                    : null}
                 {ingredient.amount
                   ? <small>{getCompactAmount(ingredient.amount * factor, ingredient.type)}</small>
                   : null}
-                {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/> : null}
-                <span>{ingredient.name}</span>
-                </span>)}</div>
+                  <span>{ingredient.name}</span>
+                </span>)}
+              </span>
+            </div>
             <div>
-              <span>Output: </span>
-              {recipe.outputs.map((ingredient) => <span className='ingredient'
-                                                        title={getTitleForIngredient(ingredient)}>
+              <span className='process-list'>
+                <span>Output: </span>
+                {recipe.outputs.map((ingredient) => <span key={ingredient.id} className='ingredient'
+                                                          title={getTitleForIngredient(ingredient)}>
+                  {ingredient.type === 'ITEM'
+                    ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/>
+                    : null}
                 {ingredient.amount
                   ? <small>{getCompactAmount(ingredient.amount * factor, ingredient.type)}</small>
                   : null}
-                {ingredient.type === 'ITEM' ? <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/> : null}
-                <span>{ingredient.name}</span>
-                </span>)}</div>
+                  <span>{ingredient.name}</span>
+                </span>)}
+                </span>
+            </div>
+
           </div>
         </div>;
       })}

@@ -93,7 +93,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     </div>
     <div className='view-body'>
       {Object.entries(groups).map(([group, ingredientList]) => {
-        return <div>
+        return <div key={group}>
           <div className='view-summary-group'>{group}</div>
           {ingredientList.map((ingredient) => {
             let name = ingredient.name;

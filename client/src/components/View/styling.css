@@ -26,7 +26,7 @@
 }
 
 .ViewInstructions {
-  flex: 2 2;
+  flex: 1 1;
   border-right: #e1e1e1 1px solid;
   /*border-top-right-radius: 2px;*/
   /*border-bottom-right-radius: 2px;*/
@@ -198,20 +198,18 @@
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-.ViewInstructions .view-entry .title {
+.ViewInstructions .view-entry-title {
   font-weight: 600;
   border-bottom: #e1e1e1 1px solid;
   margin-top: 8px;
 }
 
-.ViewInstructions .view-entry .gather-list {
+.ViewInstructions .view-entry .process-list {
   display: flex;
   flex-wrap: wrap;
 }
 
-
-
-.ViewInstructions .view-entry .gather-list .ingredient {
+.ViewInstructions .view-entry .process-list .ingredient {
   margin-top: 1px;
   margin-bottom: 1px;
 }

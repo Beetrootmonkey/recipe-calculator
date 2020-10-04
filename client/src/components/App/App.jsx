@@ -68,13 +68,13 @@ const App = () => {
         <ViewInstructions onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                           onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
                           recipeTreeRoots={recipeTreeRoots}/>
-        <ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
-                     onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                     recipeTreeRoots={recipeTreeRoots}
-                     onSetAmount={(ingredient, amount) => setRecipeTreeRoots((state) => ({
-                       ...state,
-                       [ingredient.id]: {...ingredient, amount}
-                     }))}/>
+        {/*<ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}*/}
+        {/*             onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}*/}
+        {/*             recipeTreeRoots={recipeTreeRoots}*/}
+        {/*             onSetAmount={(ingredient, amount) => setRecipeTreeRoots((state) => ({*/}
+        {/*               ...state,*/}
+        {/*               [ingredient.id]: {...ingredient, amount}*/}
+        {/*             }))}/>*/}
       </div>
     </div>
     {ingredientModal}
