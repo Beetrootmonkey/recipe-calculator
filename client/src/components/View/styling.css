@@ -10,8 +10,8 @@
 .View.ViewMapping {
   flex: 1 1;
   border-right: #e1e1e1 1px solid;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
+  /*border-top-left-radius: 2px;*/
+  /*border-bottom-left-radius: 2px;*/
 }
 
 .View.ViewTree {
@@ -27,8 +27,8 @@
 .View.ViewInstructions {
   flex: 1 1;
   border-right: #e1e1e1 1px solid;
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
+  /*border-top-right-radius: 2px;*/
+  /*border-bottom-right-radius: 2px;*/
 }
 
 .View > .view-header {
@@ -48,42 +48,42 @@
   cursor: help;
 }
 
-.View.ViewTree .view-tree-node {
+.View.ViewTree .view-entry {
   display: flex;
   justify-content: space-between;
   cursor: pointer;
 }
 
-.View.ViewTree .view-tree-node:hover {
+.View.ViewTree .view-entry:hover {
   background-color: cornflowerblue;
   color: white;
 }
 
-.View.ViewTree .view-tree-node small {
+.View.ViewTree .view-entry small {
   font-size: 10px;
   color: #969696;
   margin-left: 4px;
 }
 
-.View.ViewTree .view-tree-node:hover small {
+.View.ViewTree .view-entry:hover small {
   color: white;
 }
 
-.View.ViewMapping .view-mapping-entry {
+.View.ViewMapping .view-entry {
   display: flex;
   justify-content: space-between;
 }
 
-.View.ViewMapping .view-mapping-entry-name {
+.View.ViewMapping .view-entry {
   cursor: default;
 }
 
-.View.ViewMapping .view-mapping-entry:hover {
+.View.ViewMapping .view-entry:hover {
   background-color: cornflowerblue;
   color: white;
 }
 
-.View.ViewMapping .view-mapping-entry > .remove-button {
+.View .view-entry > .icon-button {
   cursor: pointer;
   /*color: transparent;*/
   color: #969696;
@@ -94,71 +94,47 @@
   height: 20px;
 }
 
-.View.ViewMapping .view-mapping-entry:hover > .remove-button {
+.View .view-entry:hover > .icon-button {
+  border-radius: 4px;
   color: white;
 }
 
-.View.ViewMapping .view-mapping-entry > .remove-button:hover {
-  border-radius: 4px;
-  color: #ff2b1d;
-}
-
-.View.ViewMapping .view-mapping-entry > .remove-button:focus {
-  border-radius: 4px;
-  color: #ff2b1d;
-}
-
-.View.ViewMapping .view-mapping-entry > .remove-button:active {
-  background-color: #ff2b1d;
+.View .view-entry > .icon-button:hover {
   color: white;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.View.ViewSummary .view-summary-entry {
+.View .view-entry > .icon-button:active {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.View .view-entry > .icon-button:hover.error {
+  color: #ff2b1d;
+  background-color: rgba(255, 43, 29, 0.2);
+}
+
+.View .view-entry > .icon-button:active.error {
+  background-color: rgba(255, 43, 29, 0.4);
+}
+
+.View.ViewSummary .view-entry {
   display: flex;
   cursor: pointer;
+  justify-content: space-between;
 }
 
-.View.ViewSummary .view-summary-entry:hover {
+.View.ViewSummary .view-entry:hover {
   background-color: cornflowerblue;
   color: white;
 }
 
-.View.ViewSummary .view-summary-entry small {
+.View.ViewSummary .view-entry small {
   font-size: 10px;
   color: #969696;
   margin-left: 4px;
+  margin-right: 4px;
 }
 
-.View.ViewSummary .view-summary-entry:hover small {
-  color: white;
-}
-
-.View.ViewTree .view-tree-node > .remove-button {
-  cursor: pointer;
-  /*color: transparent;*/
-  color: #969696;
-  margin-right: 1px;
-  margin-top: 1px;
-  border-radius: 4px;
-  width: 20px;
-  height: 20px;
-}
-
-.View.ViewTree .view-tree-node:hover > .remove-button {
-  color: white;
-}
-
-.View.ViewTree .view-tree-node > .remove-button:hover {
-  border-radius: 4px;
-  color: #ff2b1d;
-}
-
-.View.ViewTree .view-tree-node > .remove-button:focus {
-  border-radius: 4px;
-  color: #ff2b1d;
-}
-
-.View.ViewTree .view-tree-node > .remove-button:active {
-  background-color: #ff2b1d;
+.View.ViewSummary .view-entry:hover small {
   color: white;
 }

@@ -7,5 +7,6 @@ export const getUnitFromIngredientType = (type) => {
 };
 
 export const getDisplayNameFromRecipeIngredient = (ingredient) => {
-  return ingredient.amount  + getUnitFromIngredientType(ingredient.type) + ' ' + ingredient.name;
+  const unit = getUnitFromIngredientType(ingredient.type);
+  return ingredient.amount  + (unit ? ' ' + unit : '') + ' ' + ingredient.name;
 };

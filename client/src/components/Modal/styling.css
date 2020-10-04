@@ -79,3 +79,16 @@
 .Modal .content-list tr:hover {
   background-color: cornflowerblue;
 }
+
+.Modal .content-list tr.marked {
+  background-color: rgba(100, 149, 237, 0.21);
+}
+
+.Modal .content-list tr.marked:hover {
+  background-color: cornflowerblue;
+}
+
+.Modal.SummaryModal .modal-footer {
+  display: flex;
+  justify-content: space-between;
+}

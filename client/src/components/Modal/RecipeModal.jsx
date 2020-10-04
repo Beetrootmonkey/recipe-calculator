@@ -6,7 +6,7 @@ import Modal from './Modal';
 
 const {useState} = require('react');
 
-const RecipeModal = ({outputItem, closeModal, onConfirm}) => {
+const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
   const classes = ['Modal', 'RecipeModal'];
   const [searchInputValue, setSearchInputValue] = useState('');
   const searchValue = useDebounce(searchInputValue);
@@ -34,6 +34,9 @@ const RecipeModal = ({outputItem, closeModal, onConfirm}) => {
   useEffect(() => loadData(searchValue), [loadData, searchValue]);
 
   let title = 'Pick a recipe';
+  if (chosenRecipe) {
+    title = 'Change recipe';
+  }
   if (outputItem) {
     title += ' for \'' + outputItem.name + '\'';
   }
@@ -71,8 +74,9 @@ const RecipeModal = ({outputItem, closeModal, onConfirm}) => {
             </tr>
           </thead>
           <tbody>
-            {(data || []).map((e) => {
-              return <tr className='clickable' key={e.id} onClick={() => {
+            {[...chosenRecipe ? [chosenRecipe.recipe] : [], ...(data || []).filter((e) => chosenRecipe ? e.id !== chosenRecipe.recipe.id : true)].map((e) => {
+              const isInUse = chosenRecipe ? e.id === chosenRecipe.recipe.id : false;
+              return <tr className={'clickable' + (isInUse ? ' marked' : '')} key={e.id} onClick={() => {
                 onConfirm(e);
                 closeModal();
                 setSearchInputValue('');

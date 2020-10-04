@@ -38,7 +38,7 @@ const App = () => {
                                onConfirm={(recipe) => setRecipeMapping((state) => ({
                                  ...state,
                                  [recipeModalData.id]: {ingredient: recipeModalData, recipe}
-                               }))}/>;
+                               }))} chosenRecipe={recipeMapping[recipeModalData.id]}/>;
   }
 
   return <div className="App">
@@ -62,7 +62,11 @@ const App = () => {
                   })}/>
         <ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                      onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                     recipeTreeRoots={recipeTreeRoots}/>
+                     recipeTreeRoots={recipeTreeRoots}
+                     onSetAmount={(ingredient, amount) => setRecipeTreeRoots((state) => ({
+                       ...state,
+                       [ingredient.id]: {...ingredient, amount}
+                     }))}/>
         {/*<ViewInstructions/>*/}
       </div>
     </div>

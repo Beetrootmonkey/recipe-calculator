@@ -3,6 +3,12 @@ import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
 import View from './View';
 
+const NodeTypes = {
+  ROOT: 'Root',
+  LEAF: 'Leaf',
+  INTERMEDIATE: 'Intermediate'
+};
+
 const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping, recipeTreeRoots}) => {
 
   const list = [];
@@ -11,21 +17,25 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     list.push(entry);
     const obj = recipeMapping[ingredient.id];
     if (obj == null) {
-      entry.isLeaf = true;
+      if (entry.nodeType == null) {
+        entry.nodeType = NodeTypes.LEAF;
+      }
       return;
     }
     const {recipe} = obj;
     if (recipe) {
       entry.recipeType = recipe.type;
       if (recipe.inputs) {
-        recipe.inputs.forEach((input) => addInput(input, (path == null ? '└─    ' : '      ') + (path || '')));
+        recipe.inputs.forEach((input) => addInput({...input, nodeType: NodeTypes.INTERMEDIATE}, (path == null
+          ? '└─    '
+          : '      ') + (path || '')));
       } else {
         console.error('Found recipe with no inputs:', recipe);
       }
     }
   };
   Object.values(recipeTreeRoots || {}).forEach((ingredient) => {
-    addInput({...ingredient, isRoot: true});
+    addInput({...ingredient, nodeType: NodeTypes.ROOT});
   });
 
   return <View className='ViewTree'>
@@ -41,15 +51,15 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     <div className='view-body'>
       {list.map((ingredient) => {
         const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
-        return <div className='view-tree-node' key={ingredient.id} onClick={() => onClickElement(ingredient)}
+        return <div className='view-entry' key={ingredient.id} onClick={() => onClickElement(ingredient)}
                     title={title}>
           <div>
             {ingredient.path ? <small>{ingredient.path}</small> : null}
             {ingredient.name}
             {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
           </div>
-          {ingredient.isRoot ?
-            <Icon type='close' className='remove-button' title='Click to remove recipe'
+          {ingredient.nodeType === NodeTypes.ROOT ?
+            <Icon type='close' className='icon-button error' title='Click to remove recipe'
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemoveElement(ingredient.id);

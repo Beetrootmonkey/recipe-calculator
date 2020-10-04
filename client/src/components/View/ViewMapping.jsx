@@ -19,9 +19,9 @@ const ViewMapping = ({onClickButton, recipeMapping, onRemoveElement}) => {
       {Object.values(recipeMapping || {}).map(({ingredient, recipe}) => {
         const title = recipe.type + ' | ' + recipe.inputs.map(getDisplayNameFromRecipeIngredient)
           .join(' + ') + ' = ' + recipe.outputs.map(getDisplayNameFromRecipeIngredient).join(' + ');
-        return <div className='view-mapping-entry' key={ingredient.id}>
-          <div className='view-mapping-entry-name' title={title}>{ingredient.name}</div>
-          <Icon type='close' className='remove-button' title={'Click to remove mapping for ' + ingredient.name}
+        return <div className='view-entry' key={ingredient.id}>
+          <div title={title}>{ingredient.name}</div>
+          <Icon type='close' className='icon-button error' title={'Click to remove mapping for ' + ingredient.name}
                 onClick={(e) => {
                   e.stopPropagation();
                   onRemoveElement(ingredient.id);
