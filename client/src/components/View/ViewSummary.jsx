@@ -14,16 +14,14 @@ const NodeTypes = {
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
   const [modalData, setModalData] = useState(null);
 
-  const registeredIngredients = {};
+  const ingredientAmounts = {};
   const list = [];
   const addInput = (ingredient) => {
-    if (registeredIngredients[ingredient.id]) {
-      // Has been used before
-      return;
-    }
-    registeredIngredients[ingredient.id] = ingredient;
     const entry = {...ingredient};
-    list.push(entry);
+    if (ingredientAmounts[ingredient.id] == null) {
+      list.push(entry);
+    }
+    ingredientAmounts[ingredient.id] = (ingredientAmounts[ingredient.id] || 0) + (ingredient.amount || 0);
     const obj = recipeMapping[ingredient.id];
     if (obj == null) {
       entry.nodeType = NodeTypes.LEAF;
@@ -86,6 +84,8 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                           onConfirm={(amount) => onSetAmount(modalData, amount)}/>;
   }
 
+  console.log('groups', groups);
+
   return <View className='ViewSummary'>
     <div className='view-header'>
       <div className='title'>Summary<small>
@@ -100,7 +100,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
           {ingredientList.map((ingredient) => {
             let name = ingredient.name;
 
-            let amount = ingredient.amount;
+            let amount = ingredientAmounts[ingredient.id];
             if (amount == null) {
               amount = 1;
             }
