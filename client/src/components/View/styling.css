@@ -171,60 +171,24 @@
   margin-right: 2px;
 }
 
-.ViewInstructions .view-entry {
-  display: flex;
-  justify-content: space-between;
-  cursor: default;
+.ViewSummary .view-entry .input {
+  margin-left: 16px;
+  padding-left: 4px;
+  border-left: #e1e1e1 1px solid;
+  margin-top: 4px;
 }
 
-.ViewInstructions .view-entry:hover {
-  /*background-color: cornflowerblue;*/
-  /*color: white;*/
-}
-
-.ViewInstructions .view-entry > div {
-  width: 100%;
-}
-
-.ViewInstructions .view-entry small {
-  font-size: 12px;
-  color: #969696;
-  margin-left: 4px;
-  margin-right: 4px;
-}
-
-.ViewInstructions .view-entry:hover small {
-  /*color: white;*/
-}
-
-.ViewInstructions .ingredient {
-  background-color: rgba(100, 149, 237, 0.2);
-  border-radius: 2px;
-  margin-right: 4px;
-}
-
-.ViewInstructions .ingredient:hover {
-  /*background-color: rgba(255, 255, 255, 0.4);*/
-  background-color: rgba(100, 149, 237, 0.6);
-  color: white;
-}
-
-.ViewInstructions .ingredient:hover small {
-  color: white;
-}
-
-.ViewInstructions .view-entry-title {
-  font-weight: 600;
+.ViewSummary .view-entry .process-header {
   border-bottom: #e1e1e1 1px solid;
-  margin-top: 8px;
+  margin-bottom: 4px;
 }
 
-.ViewInstructions .view-entry .process-list {
-  display: flex;
-  flex-wrap: wrap;
+.ViewSummary .view-entry > .process {
+  margin-top: 6px;
+  margin-bottom: 10px;
 }
 
-.ViewInstructions .view-entry .process-list .ingredient {
-  margin-top: 1px;
-  margin-bottom: 1px;
+.ViewSummary .view-entry > .ingredient {
+  margin-top: 4px;
+  margin-bottom: 4px;
 }

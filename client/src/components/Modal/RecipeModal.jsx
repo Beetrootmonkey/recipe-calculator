@@ -107,7 +107,7 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
                 })}</td>
                 <td>{e.outputs.map((ingredient) => {
                   const unit = getUnitFromIngredientType(ingredient.type);
-                  return <span className='ingredient'
+                  return <span className='ingredient' key={ingredient.id}
                                title={getTitleForIngredient(ingredient)}>
                     <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small>
                     <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
