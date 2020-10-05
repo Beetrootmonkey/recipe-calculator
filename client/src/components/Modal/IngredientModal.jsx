@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
 import {useDebounce} from '../../hooks/useDebounce';
-import CreationIntent from '../../util/CreationIntent';
 import IngredientTypes from '../../util/IngredientTypes';
 import Button from '../Button/Button';
 import Modal from './Modal';
@@ -29,16 +28,11 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
 
   useEffect(() => loadData(searchValue), [searchValue, loadData]);
 
-  let title = 'Pick an item';
-  if (intent === CreationIntent.CREATE_MAPPING) {
-    title = 'Setting recipe - Step 1: ' + title;
-  } else if (intent === CreationIntent.CREATE_TREE) {
-    title = 'Creating new item tree - ' + title;
-  }
+  let title = 'Pick an item to track';
 
   let infoText = '';
   if (info) {
-      infoText = `${info.total} items available`;
+    infoText = `${info.total} items available`;
     if (info.total !== info.filtered) {
       if (info.shown === info.filtered) {
         infoText = `Showing all ${info.shown} matches`;

@@ -4,3 +4,14 @@
 - Tooltips via Klicks
 - Fehlende Icons
 - Output-Chancen
+- Tasks nach Machine gruppieren
+- Tutorial, bessere Erklärung
+- Fix Kreisreferenzen
+- Cables/Wires mit Dicke im Namen ("1x Copper Cable") sind mega verwirrend
+- manifest.json:
+  - "short_name"
+  - "name"
+  - "icons"
+- index.html > description/content
+- Unterstützung Firefox, Opera, Edge, Safari etc
+- Tracked items ohne Rezept werden in 'Tasks' unter 'Gather' angezeigt

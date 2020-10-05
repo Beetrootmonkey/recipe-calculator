@@ -14,14 +14,26 @@ const NodeTypes = {
   INTERMEDIATE: 'Process'
 };
 
+const RecipeListDisplayOptions = {
+  IN_ORDER: 'Show tasks in order of processing',
+  GROUPED_BY_TYPE: 'Show tasks grouped by recipe type'
+};
+
+const RecipeListDisplayTypes = {
+  IN_ORDER: 'IN_ORDER',
+  GROUPED_BY_TYPE: 'GROUPED_BY_TYPE'
+};
+
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
   const [modalData, setModalData] = useState(null);
   const [clearEverythingModalData, setClearEverythingModalData] = useState(false);
   const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
   const [ingredientsInStock, setIngredientsInStock] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK)) || {});
+  const [recipeListDisplayType, setRecipeListDisplayType] = useState(localStorage.getItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE) || RecipeListDisplayTypes.IN_ORDER);
 
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK, JSON.stringify(ingredientsInStock)), [ingredientsInStock]);
+  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE, recipeListDisplayType), [recipeListDisplayType]);
 
   const ingredientMaxDepths = {};
   const ingredientTypes = {};
@@ -53,7 +65,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
   const ingredientAmounts = {};
   Object.entries(recipeTreeRoots)
-    .forEach(([ingredientId, ingredient]) => ingredientAmounts[ingredientId] = ingredient.amount);
+    .forEach(([ingredientId, ingredient]) => ingredientAmounts[ingredientId] = ingredient.amount || 1);
 
   const list = Object.entries(ingredientMaxDepths).map(([ingredientId, depth]) => {
     const {recipe} = recipeMapping[ingredientId] || {};
@@ -111,13 +123,15 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
   const groups = {};
   list.forEach(({nodeType, ...props}) => {
-    if (!groups[nodeType]) {
-      groups[nodeType] = [];
+    let type = nodeType;
+    if (recipeListDisplayType === RecipeListDisplayTypes.GROUPED_BY_TYPE) {
+      type = props.recipe ? props.recipe.type : nodeType;
     }
-    groups[nodeType].push(props);
+    if (!groups[type]) {
+      groups[type] = [];
+    }
+    groups[type].push(props);
   });
-
-  console.log('stock', ingredientsInStock);
 
   let modal;
   if (modalData) {
@@ -135,19 +149,26 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       }
     }}>
       <div className='modal-body'>
-        You are about to clear all stock and checkbox data. Are you sure you want to continue?
+        {(checkboxState != null && Object.keys(checkboxState).length > 0) || (ingredientsInStock != null && Object.keys(ingredientsInStock).length > 0)
+          ? 'You are about to clear all stock and checkbox data. Are you sure you want to continue?'
+          : <span>
+            <div>There is nothing to clear.</div>
+            <div>Come back after you finish crafting and want to reset.</div>
+        </span>}
       </div>
       <div className='modal-footer'>
         <Button size='big' onClick={() => setClearEverythingModalData(false)}>Close</Button>
-        <Button size='big' onClick={() => {
+        {(checkboxState != null && Object.keys(checkboxState).length > 0) || (ingredientsInStock != null && Object.keys(ingredientsInStock).length > 0) ? <Button size='big' onClick={() => {
           setClearEverythingModalData(false);
           setIngredientsInStock({});
           setCheckboxState({});
         }}>Yes, continue
-        </Button>
+        </Button> : <span/>}
       </div>
     </Modal>;
   }
+
+  console.log('recipeListDisplayType', recipeListDisplayType);
 
   return <View className='ViewSummary'>
     <div className='view-header'>
@@ -158,14 +179,19 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
               'the pencil button next to ingredients. Click the pencil button next to the tracked item (\'Root\') to ' +
               'change the amount you want to craft. Use the \'Clear\' button to reset stock and checkbox data.'}/></small>
       </span>
+      <span className='spacer'/>
+      <select value={recipeListDisplayType} onChange={(e) => setRecipeListDisplayType(e.target.value)}>
+        <option value={RecipeListDisplayTypes.IN_ORDER}>{RecipeListDisplayOptions.IN_ORDER}</option>
+        <option value={RecipeListDisplayTypes.GROUPED_BY_TYPE}>{RecipeListDisplayOptions.GROUPED_BY_TYPE}</option>
+      </select>
       <span>
         <Button size='big' onClick={() => setClearEverythingModalData(true)}>Clear</Button>
       </span>
     </div>
     <div className='view-body'>
-      {Object.entries(groups).map(([nodeType, ingredientList]) => {
-        return <div key={nodeType}>
-          <div className='view-summary-group'>{nodeType}</div>
+      {Object.entries(groups).map(([group, ingredientList]) => {
+        return <div key={group}>
+          <div className='view-summary-group'>{group}</div>
           {ingredientList.map(({ingredientId, recipe, depth, totalOutputAmount, overhead, timesToCraft}) => {
             let name = ingredientNames[ingredientId];
             let info;
@@ -179,21 +205,21 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
             const title = `Amount: ${amount + ' ' + unit} | Click to ${recipe ? 'change' : 'add a'} mapping`;
             const amountText = getCompactAmount(amount, ingredientTypes[ingredientId]);
 
-            return <div className={'view-entry ' + nodeType + (checkboxState[ingredientId] ? ' checked' : '')}
+            return <div className={'view-entry ' + group + (checkboxState[ingredientId] ? ' checked' : '')}
                         key={ingredientId}
                         onClick={() => onClickElement({id: ingredientId, name: ingredientNames[ingredientId]})}
                         title={title}>
-              <div className={'content ' + (nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
-                <span className={(nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
+              <div className={'content ' + (group !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
+                <span className={(group !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
                   <img src={'/icons/' + name} alt='' width="24" height="24"/>
                   <small>{amountText}</small>
                   {info ? <small>{info}</small> : null}
-                  {name}
+                  <span className={recipeTreeRoots[ingredientId] ? 'item-name-big' : ''}>{recipeTreeRoots[ingredientId] ? '[Tracked item] ' + name : name}</span>
                   {ingredientsInStock[ingredientId] ?
                     <small>{' (' + ingredientsInStock[ingredientId] + ' in stock)'}</small> : null}
-                  {recipe ? <small>{'via ' + recipe.type}</small> : null}
+                  {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ? <small>{'via ' + recipe.type}</small> : null}
                 </span>
-                {nodeType !== NodeTypes.LEAF ? <div className='input'>
+                {group !== NodeTypes.LEAF ? <div className='input'>
                   {recipe ? recipe.inputs.map((input) => {
                     return <div key={input.id}>
                       <img src={'/icons/' + input.name} alt='' width="24" height="24"/>
@@ -203,14 +229,15 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                   }) : null}
                 </div> : null}
               </div>
+              <span className='spacer'/>
               <span className='icon-button-wrapper'>
-                {nodeType === NodeTypes.ROOT
-                  ? <Icon type='edit' className='icon-button' title='Click to edit amount'
+                {recipeTreeRoots[ingredientId]
+                  ? <Icon type='build' className='icon-button' title='Click to edit amount to craft'
                           onClick={(e) => {
                             e.stopPropagation();
                             setModalData(recipeTreeRoots[ingredientId]);
                           }}/>
-                  : <Icon type='edit' className='icon-button' title='Click to edit amount in stock'
+                  : <Icon type='storage' className='icon-button' title='Click to edit amount in stock'
                           onClick={(e) => {
                             e.stopPropagation();
                             setModalData({
@@ -229,11 +256,10 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                             });
                           }}/>}
               </span>
-              <span className='spacer'/>
               <div className='icon-button-wrapper'>
                 <div>
                   <Icon type={checkboxState[ingredientId] ? 'check_box' : 'check_box_outline_blank'}
-                        className='icon-button'
+                        className={'icon-button big'}
                         title={checkboxState[ingredientId] ? 'Undo marking task as \'done\'' : 'Mark task as \'done\''}
                         onClick={(e) => {
                           e.stopPropagation();

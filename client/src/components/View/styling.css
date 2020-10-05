@@ -38,6 +38,11 @@
   border-bottom: #e1e1e1 1px solid;
 }
 
+.View > .view-header select {
+  height: 28px;
+  margin-right: 8px;
+}
+
 .View > .view-header > .title {
   flex: 1;
   display: flex;
@@ -63,6 +68,15 @@
   display: flex;
   justify-content: space-between;
   cursor: pointer;
+}
+
+.ViewTree .view-entry .bullet {
+  color: #969696;
+  vertical-align: top;
+}
+
+.ViewTree .view-entry:hover .bullet {
+  color: white;
 }
 
 .ViewTree .view-entry:hover {
@@ -100,12 +114,21 @@
 
 .View .view-entry .icon-button {
   cursor: pointer;
-  /*color: transparent;*/
   color: #969696;
   border-radius: 4px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  padding: 4px;
+}
+
+.View .view-entry .icon-button.big {
+  margin-top: 2px;
   font-size: 24px;
   width: 24px;
   height: 24px;
+  padding: 2px;
 }
 
 .View .view-entry:hover .icon-button {
@@ -180,12 +203,12 @@
   margin-top: 4px;
 }
 
-.ViewSummary .view-entry .process-header {
+.ViewSummary .view-entry:not( .checked) .process-header {
   border-bottom: #e1e1e1 1px solid;
   margin-bottom: 4px;
 }
 
-.ViewSummary .view-entry > .process {
+.ViewSummary .view-entry:not( .checked) > .process {
   margin-top: 6px;
   margin-bottom: 10px;
 }
@@ -196,27 +219,18 @@
 }
 
 .ViewSummary .view-entry .icon-button-wrapper {
-  margin-left: 4px;
   margin-right: 4px;
-}
-
-.ViewSummary .view-entry .icon-button-wrapper .icon-button {
-  margin-top: 4px;
 }
 
 .ViewSummary .view-entry.checked {
   /*opacity: 0.75;*/
   background-color: rgba(50, 205, 50, 0.8);
   color: white;
-  font-weight: 600;
+  /*font-weight: 600;*/
 }
 
 .ViewSummary .view-entry.checked .icon-button {
   color: white;
-}
-
-.ViewSummary .view-entry.checked .content .icon-button-wrapper {
-  /*vertical-align: baseline;*/
 }
 
 .ViewSummary .view-entry.checked small {
@@ -226,3 +240,15 @@
 .ViewSummary .view-entry.checked .content .input {
   display: none;
 }
+
+.ViewSummary .view-entry:not(:hover):not(.checked) .content .item-name-big {
+  color: cornflowerblue;
+}
+
+.ViewSummary .view-entry .content .item-name-big {
+  font-weight: 900;
+}
+
+/*.ViewSummary .view-entry:hover .content .item-name-big {*/
+/*  color: white;*/
+/*}*/

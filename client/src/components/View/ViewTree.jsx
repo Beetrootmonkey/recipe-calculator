@@ -18,6 +18,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
 
   const list = [];
   const addInput = (ingredient, path, registeredIngredients = {}) => {
+    registeredIngredients = {...registeredIngredients};
     const entry = {...ingredient, path};
     list.push(entry);
     const obj = recipeMapping[ingredient.id];
@@ -87,7 +88,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
                           [ingredient.id]: !nodesClosedState[ingredient.id]
                         }));
                       }}/>
-              : '     '}
+              : <span className='bullet'>{'  •  '}</span>}
             <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/>
             {ingredient.name}
             {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
