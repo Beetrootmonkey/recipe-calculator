@@ -14,81 +14,90 @@ const NodeTypes = {
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
   const [modalData, setModalData] = useState(null);
 
-  const ingredientAmounts = {};
   const ingredientMaxDepths = {};
-  const list = [];
-  const addInput = (ingredient) => {
-    const entry = {...ingredient};
-    if (ingredientAmounts[ingredient.id] == null) {
-      list.push(entry);
-    }
+  const ingredientTypes = {};
+  const ingredientNames = {};
+  const addInput = (ingredient, depth) => {
+    ingredientTypes[ingredient.id] = ingredient.type;
+    ingredientNames[ingredient.id] = ingredient.name;
     if (ingredientMaxDepths[ingredient.id] == null) {
-      ingredientMaxDepths[ingredient.id] = entry.depth;
+      ingredientMaxDepths[ingredient.id] = depth;
     } else {
-      ingredientMaxDepths[ingredient.id] = Math.max(ingredientMaxDepths[ingredient.id], entry.depth);
+      ingredientMaxDepths[ingredient.id] = Math.max(ingredientMaxDepths[ingredient.id], depth);
     }
 
-    ingredientAmounts[ingredient.id] = (ingredientAmounts[ingredient.id] || 0) + (ingredient.amount || 0);
-    const obj = recipeMapping[ingredient.id];
-    if (obj == null) {
-      entry.nodeType = NodeTypes.LEAF;
-      return;
-    }
-    const {recipe} = obj;
+    const {recipe} = recipeMapping[ingredient.id] || {};
     if (recipe) {
 
-      let output = recipe.outputs.find((output) => output.id === ingredient.id);
-      const outputAmount = output.amount;
-      const neededAmount = (ingredient.amount != null ? ingredient.amount : 1) * (ingredient.factor || 1);
-      const factor = Math.ceil(neededAmount / outputAmount);
+      // let output = recipe.outputs.find((output) => output.id === ingredient.id);
+      // const outputAmount = output.amount;
+      // const neededAmount = (ingredient.amount != null ? ingredient.amount : 1) * (ingredient.factor || 1);
+      // const factor = Math.ceil(neededAmount / outputAmount);
 
       if (recipe.inputs) {
         recipe.inputs.forEach((input) => addInput({
-          ...input,
-          nodeType: NodeTypes.INTERMEDIATE,
-          factor,
-          depth: entry.depth + 1
-        }));
+          ...input
+        }, depth + 1));
       } else {
         console.error('Found recipe with no inputs:', recipe);
       }
     }
   };
+
   Object.values(recipeTreeRoots || {}).forEach((ingredient) => {
-    addInput({...ingredient, nodeType: NodeTypes.ROOT, depth: 0});
+    addInput({...ingredient}, 0);
   });
-  const sortedList = list.sort((a, b) => {
-    if (a.nodeType === b.nodeType) {
-      if (ingredientMaxDepths[a.id] === ingredientMaxDepths[b.id]) {
-        return a.name < b.name ? -1 : 1;
-      } else if (ingredientMaxDepths[a.id] < ingredientMaxDepths[b.id]) {
-        return -1;
-      } else {
-        return 1;
+
+  const ingredientAmounts = {};
+  Object.entries(recipeTreeRoots).forEach(([ingredientId, ingredient]) => ingredientAmounts[ingredientId] = ingredient.amount);
+
+  const list = Object.entries(ingredientMaxDepths).map(([ingredientId, depth]) => {
+    const {recipe} = recipeMapping[ingredientId] || {};
+    if (recipe) {
+      return {ingredientId, recipe, depth};
+    } else {
+      // Leaf = atomic ingredient without a recipe
+      return {ingredientId, depth};
+    }
+  }).filter((e) => e).sort((a, b) => {
+    if (a.depth === b.depth) {
+      if (a.recipe === b.recipe) { // Only the case if both are NULL
+        return 0;
       }
+      return a.recipe ? -1 : 1;
     }
-    if (a.nodeType === NodeTypes.ROOT) {
-      return -1;
+    return a.depth < b.depth ? -1 : 1;
+  }).map(({ingredientId, recipe, depth}) => {
+    let neededAmount = ingredientAmounts[ingredientId];
+
+    if(!recipe) {
+      return {ingredientId, recipe, depth, totalOutputAmount: neededAmount, overhead: 0, timesToCraft: 1, nodeType: NodeTypes.LEAF};
     }
-    if (b.nodeType === NodeTypes.ROOT) {
-      return 1;
-    }
-    if (a.nodeType === NodeTypes.INTERMEDIATE) {
-      return -1;
-    }
-    if (b.nodeType === NodeTypes.INTERMEDIATE) {
-      return 1;
-    }
-    return 0;
+
+    const recipeOutputAmount = recipe.outputs.find((output) => output.id === ingredientId).amount;
+    const timesToCraft = Math.ceil(neededAmount / recipeOutputAmount);
+    const totalOutputAmount = recipeOutputAmount * timesToCraft;
+    const overhead = totalOutputAmount - neededAmount;
+
+    recipe.inputs.forEach((input) => {
+      if (ingredientAmounts[input.id] == null) {
+        ingredientAmounts[input.id] = 0;
+      }
+      ingredientAmounts[input.id] += input.amount * timesToCraft;
+    });
+
+    return {ingredientId, recipe, depth, totalOutputAmount, overhead, timesToCraft, nodeType: recipeTreeRoots[ingredientId] ? NodeTypes.ROOT : NodeTypes.INTERMEDIATE};
   }).reverse();
 
   const groups = {};
-  sortedList.forEach((ingredient) => {
-    if (!groups[ingredient.nodeType]) {
-      groups[ingredient.nodeType] = [];
+  list.forEach(({nodeType, ...props}) => {
+    if (!groups[nodeType]) {
+      groups[nodeType] = [];
     }
-    groups[ingredient.nodeType].push(ingredient);
+    groups[nodeType].push(props);
   });
+
+  console.log('groups', groups);
 
   let modal;
   if (modalData) {
@@ -105,66 +114,43 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       </div>
     </div>
     <div className='view-body'>
-      {Object.entries(groups).map(([group, ingredientList]) => {
-        return <div key={group}>
-          <div className='view-summary-group'>{group}</div>
-          {ingredientList.map((ingredient) => {
-            let name = ingredient.name;
+      {Object.entries(groups).map(([nodeType, ingredientList]) => {
+        return <div key={nodeType}>
+          <div className='view-summary-group'>{nodeType}</div>
+          {ingredientList.map(({ingredientId, recipe, depth, totalOutputAmount, overhead, timesToCraft}) => {
+            let name = ingredientNames[ingredientId];
+            let info;
 
-            let amount = ingredientAmounts[ingredient.id];
-            if (amount == null) {
-              amount = 1;
+            const unit = getUnitFromIngredientType(ingredientTypes[ingredientId]);
+            let amount = totalOutputAmount - overhead;
+            if (overhead) {
+              info = '(+' + (overhead) + (unit ? ' ' + unit : '') + ')';
             }
 
-            let factor = ingredient.factor;
-            if (factor == null) {
-              factor = 1;
-            }
-            amount *= factor;
-
-            const obj = recipeMapping[ingredient.id];
-            const recipe = obj != null ? obj.recipe : null;
-
-            let timesToCraft = 1;
-            let info = null;
-            if (recipe) {
-              let output = recipe.outputs.find((output) => output.id === ingredient.id);
-              const outputAmount = output.amount;
-              const neededAmount = amount;
-              timesToCraft = Math.ceil(neededAmount / outputAmount);
-
-              const totalOutput = timesToCraft * outputAmount;
-              if (totalOutput !== neededAmount) {
-                const type = getUnitFromIngredientType(ingredient.type);
-                info = '(+' + (totalOutput - neededAmount) + (type ? ' ' + type : '') + ')';
-              }
-            }
-
-            const unit = getUnitFromIngredientType(ingredient.type);
             const title = `Amount: ${amount + ' ' + unit} | Click to ${recipe ? 'change' : 'add a'} mapping`;
-            amount = getCompactAmount(amount, ingredient.type);
+            amount = getCompactAmount(amount, ingredientTypes[ingredientId]);
 
-            return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id}
-                        onClick={() => onClickElement(ingredient)}
+            return <div className={'view-entry ' + nodeType} key={ingredientId}
+                        onClick={() => onClickElement({id: ingredientId})}
                         title={title}>
-              <div className={'content ' + (ingredient.nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
-                <span className={(ingredient.nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
-                  <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/>
+              <div className={'content ' + (nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
+                <span className={(nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
+                  <img src={'/icons/' + name} alt='' width="24" height="24"/>
                   <small>{amount}</small>
                   {info ? <small>{info}</small> : null}
                   {name}
                   {/*{' ' + ingredientMaxDepths[ingredient.id]}*/}
                   {recipe ? <small>{'via ' + recipe.type}</small> : null}
                 </span>
-                {ingredient.nodeType === NodeTypes.ROOT ?
+                {nodeType === NodeTypes.ROOT ?
                   <Icon type='edit' className='icon-button' title='Click to edit amount'
                         onClick={(e) => {
                           e.stopPropagation();
-                          setModalData(ingredient);
+                          setModalData(recipeTreeRoots[ingredientId]);
                         }}/> : null}
-                {ingredient.nodeType !== NodeTypes.LEAF ? <div className='input'>
+                {nodeType !== NodeTypes.LEAF ? <div className='input'>
                   {recipe ? recipe.inputs.map((input) => {
-                    return <div>
+                    return <div key={input.id}>
                       <img src={'/icons/' + input.name} alt='' width="24" height="24"/>
                       {input.amount ? <small>{getCompactAmount(input.amount * timesToCraft, input.type)}</small> : null}
                       {input.name}
