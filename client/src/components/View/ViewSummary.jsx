@@ -2,7 +2,9 @@ import React, {useEffect, useState} from 'react';
 import getCompactAmount from '../../util/getCompactAmount';
 import {getUnitFromIngredientType} from '../../util/IngredientFormat';
 import LocalStorageKeys from '../../util/LocalStorageKeys';
+import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
+import Modal from '../Modal/Modal';
 import SummaryModal from '../Modal/SummaryModal';
 import View from './View';
 
@@ -14,6 +16,7 @@ const NodeTypes = {
 
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
   const [modalData, setModalData] = useState(null);
+  const [clearEverythingModalData, setClearEverythingModalData] = useState(false);
   const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
   const [ingredientsInStock, setIngredientsInStock] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK)) || {});
 
@@ -123,13 +126,41 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                           inStock={modalData.inStock} amountInStock={modalData.amountInStock}/>;
   }
 
+  let clearEverythingModal;
+  if (clearEverythingModalData) {
+    clearEverythingModal = <Modal className='clear-everything' onKeyDown={(e) => {
+      console.log('KEY', e.key, e.key === 'Escape');
+      if (e.key === 'Escape') {
+        setClearEverythingModalData(false);
+      }
+    }}>
+      <div className='modal-body'>
+        You are about to clear all stock and checkbox data. Are you sure you want to continue?
+      </div>
+      <div className='modal-footer'>
+        <Button size='big' onClick={() => setClearEverythingModalData(false)}>Close</Button>
+        <Button size='big' onClick={() => {
+          setClearEverythingModalData(false);
+          setIngredientsInStock({});
+          setCheckboxState({});
+        }}>Yes, continue
+        </Button>
+      </div>
+    </Modal>;
+  }
+
   return <View className='ViewSummary'>
     <div className='view-header'>
-      <div className='title'><h2>Summary</h2><small>
+      <span className='title'><h2>Tasks</h2><small>
         <Icon type='help' className='help-icon'
-              title={'Items here are automatically added when the tree view is updated, which in turn is updated when you add/change mappings. ' +
-              'Use this view to work your way up to your tracked items.'}/></small>
-      </div>
+              title={'This view will show ingredients you need to gather and recipes you need to do. ' +
+              'Do these tasks from top to bottom. You can tell the system if you already have items in stock by clicking ' +
+              'the pencil button next to ingredients. Click the pencil button next to the tracked item (\'Root\') to ' +
+              'change the amount you want to craft. Use the \'Clear\' button to reset stock and checkbox data.'}/></small>
+      </span>
+      <span>
+        <Button size='big' onClick={() => setClearEverythingModalData(true)}>Clear</Button>
+      </span>
     </div>
     <div className='view-body'>
       {Object.entries(groups).map(([nodeType, ingredientList]) => {
@@ -216,6 +247,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
         </div>;
       })}
       {modal}
+      {clearEverythingModal}
     </div>
   </View>;
 };

@@ -122,3 +122,7 @@
 .Modal.RecipeModal .ingredient:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
+
+.Modal.clear-everything {
+  width: 400px;
+}

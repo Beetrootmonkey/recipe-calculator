@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDebounce} from '../../hooks/useDebounce';
 import getCompactAmount from '../../util/getCompactAmount';
-import {getDisplayNameFromRecipeIngredient, getUnitFromIngredientType} from '../../util/IngredientFormat';
+import {getUnitFromIngredientType} from '../../util/IngredientFormat';
 import Button from '../Button/Button';
 import Modal from './Modal';
 
@@ -9,7 +9,9 @@ const {useState} = require('react');
 
 const SummaryModal = ({ingredient, closeModal, onConfirm, inStock, amountInStock}) => {
   const classes = ['Modal', 'SummaryModal'];
-  const [inputValue, setInputValue] = useState(ingredient && ingredient.amount && !inStock ? ingredient.amount : (inStock && amountInStock ? amountInStock : ''));
+  const [inputValue, setInputValue] = useState(ingredient && ingredient.amount && !inStock
+    ? ingredient.amount
+    : (inStock && amountInStock ? amountInStock : ''));
   const amount = useDebounce(inputValue);
 
   let title = 'Change amount for \'' + (ingredient ? ingredient.name : '') + '\'';
@@ -41,7 +43,8 @@ const SummaryModal = ({ingredient, closeModal, onConfirm, inStock, amountInStock
     <div className='modal-header'><h2>{title}</h2></div>
     <div className='modal-body'>
       <div className='body'>
-        <input className='search-input' type='number' autoFocus value={inputValue} placeholder={inStock ? 'In stock' : 'Amount'}
+        <input className='search-input' type='number' autoFocus value={inputValue}
+               placeholder={inStock ? 'In stock' : 'Amount'}
                onChange={(e) => setInputValue(e.target.value.toLowerCase())}/>
         {infoText}
       </div>

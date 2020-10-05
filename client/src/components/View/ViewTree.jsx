@@ -62,8 +62,9 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     <div className='view-header'>
       <div className='title'><h2>Tracked items</h2><small>
         <Icon type='help' className='help-icon'
-              title={'Add items that you want to track. Tracked items are represented as \'roots\' in this tree. ' +
-              'You can choose how these items are crafted; you can even choose recipes for ingredients of recipes.'}/></small>
+              title={'Add items that you want to track. Tracked items are represented as \'Root\' in this tree. ' +
+              'You can choose how these items are crafted though clicking here or in \'Tasks\'. This view is more or ' +
+              'less just an overview of the recipe structure. Use \'Tasks\' to gather and process items.'}/></small>
       </div>
       <Button onClick={onClickButton} title='Click to add an item'>+</Button>
     </div>
