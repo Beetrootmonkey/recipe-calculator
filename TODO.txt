@@ -1,6 +1,5 @@
 - Icons via JS laden (und cachen)
-- Anzahl von Zutaten ändern
-- Checkboxen
+- Checkboxen clearen wenn Item nicht mehr getrackt wird
 - Dark mode
 - Tooltips via Klicks
 - Fehlende Icons

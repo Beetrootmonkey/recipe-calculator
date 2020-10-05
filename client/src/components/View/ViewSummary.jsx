@@ -15,8 +15,10 @@ const NodeTypes = {
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
   const [modalData, setModalData] = useState(null);
   const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
+  const [ingredientsInStock, setIngredientsInStock] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK)) || {});
 
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
+  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK, JSON.stringify(ingredientsInStock)), [ingredientsInStock]);
 
   const ingredientMaxDepths = {};
   const ingredientTypes = {};
@@ -32,12 +34,6 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
     const {recipe} = recipeMapping[ingredient.id] || {};
     if (recipe) {
-
-      // let output = recipe.outputs.find((output) => output.id === ingredient.id);
-      // const outputAmount = output.amount;
-      // const neededAmount = (ingredient.amount != null ? ingredient.amount : 1) * (ingredient.factor || 1);
-      // const factor = Math.ceil(neededAmount / outputAmount);
-
       if (recipe.inputs) {
         recipe.inputs.forEach((input) => addInput({
           ...input
@@ -73,7 +69,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     }
     return a.depth < b.depth ? -1 : 1;
   }).map(({ingredientId, recipe, depth}) => {
-    let neededAmount = ingredientAmounts[ingredientId];
+    let neededAmount = ingredientAmounts[ingredientId] - (ingredientsInStock[ingredientId] || 0);
 
     if (!recipe) {
       return {
@@ -118,12 +114,13 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     groups[nodeType].push(props);
   });
 
-  console.log('groups', groups);
+  console.log('stock', ingredientsInStock);
 
   let modal;
   if (modalData) {
     modal = <SummaryModal ingredient={modalData} closeModal={() => setModalData(null)}
-                          onConfirm={(amount) => onSetAmount(modalData, amount)}/>;
+                          onConfirm={modalData.onConfirm || ((amount) => onSetAmount(modalData, amount))}
+                          inStock={modalData.inStock} amountInStock={modalData.amountInStock}/>;
   }
 
   return <View className='ViewSummary'>
@@ -149,26 +146,22 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
             }
 
             const title = `Amount: ${amount + ' ' + unit} | Click to ${recipe ? 'change' : 'add a'} mapping`;
-            amount = getCompactAmount(amount, ingredientTypes[ingredientId]);
+            const amountText = getCompactAmount(amount, ingredientTypes[ingredientId]);
 
-            return <div className={'view-entry ' + nodeType + (checkboxState[ingredientId] ? ' checked' : '')} key={ingredientId}
+            return <div className={'view-entry ' + nodeType + (checkboxState[ingredientId] ? ' checked' : '')}
+                        key={ingredientId}
                         onClick={() => onClickElement({id: ingredientId, name: ingredientNames[ingredientId]})}
                         title={title}>
               <div className={'content ' + (nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
                 <span className={(nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
                   <img src={'/icons/' + name} alt='' width="24" height="24"/>
-                  <small>{amount}</small>
+                  <small>{amountText}</small>
                   {info ? <small>{info}</small> : null}
                   {name}
-                  {/*{' ' + ingredientMaxDepths[ingredient.id]}*/}
+                  {ingredientsInStock[ingredientId] ?
+                    <small>{' (' + ingredientsInStock[ingredientId] + ' in stock)'}</small> : null}
                   {recipe ? <small>{'via ' + recipe.type}</small> : null}
                 </span>
-                {nodeType === NodeTypes.ROOT ?
-                  <Icon type='edit' className='icon-button' title='Click to edit amount'
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setModalData(recipeTreeRoots[ingredientId]);
-                        }}/> : null}
                 {nodeType !== NodeTypes.LEAF ? <div className='input'>
                   {recipe ? recipe.inputs.map((input) => {
                     return <div key={input.id}>
@@ -179,12 +172,41 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                   }) : null}
                 </div> : null}
               </div>
+              <span className='icon-button-wrapper'>
+                {nodeType === NodeTypes.ROOT
+                  ? <Icon type='edit' className='icon-button' title='Click to edit amount'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setModalData(recipeTreeRoots[ingredientId]);
+                          }}/>
+                  : <Icon type='edit' className='icon-button' title='Click to edit amount in stock'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setModalData({
+                              id: ingredientId,
+                              name: ingredientNames[ingredientId],
+                              type: ingredientTypes[ingredientId],
+                              amount,
+                              amountInStock: ingredientsInStock[ingredientId],
+                              inStock: true,
+                              onConfirm: (newAmount) => {
+                                setIngredientsInStock((state) => ({
+                                  ...state,
+                                  [ingredientId]: Math.min(Math.max(amount, 0), newAmount)
+                                }));
+                              }
+                            });
+                          }}/>}
+              </span>
+              <span className='spacer'/>
               <div className='icon-button-wrapper'>
                 <div>
-                  <Icon type={checkboxState[ingredientId] ? 'check_box' : 'check_box_outline_blank'} className='icon-button'
+                  <Icon type={checkboxState[ingredientId] ? 'check_box' : 'check_box_outline_blank'}
+                        className='icon-button'
                         title={checkboxState[ingredientId] ? 'Undo marking task as \'done\'' : 'Mark task as \'done\''}
                         onClick={(e) => {
                           e.stopPropagation();
+                          setIngredientsInStock((state) => ({...state, [ingredientId]: 0}));
                           setCheckboxState((state) => ({...state, [ingredientId]: !state[ingredientId]}));
                         }}/>
                 </div>

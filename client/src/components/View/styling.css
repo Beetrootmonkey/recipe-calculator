@@ -102,11 +102,10 @@
   cursor: pointer;
   /*color: transparent;*/
   color: #969696;
-  margin-right: 1px;
-  margin-top: 1px;
   border-radius: 4px;
-  width: 20px;
-  height: 20px;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .View .view-entry:hover .icon-button {
@@ -135,7 +134,10 @@
 .ViewSummary .view-entry {
   display: flex;
   cursor: pointer;
-  justify-content: space-between;
+}
+
+.ViewSummary .view-entry .spacer {
+  flex: 1 1 auto;
 }
 
 .ViewSummary .view-entry:hover {
@@ -193,7 +195,12 @@
   margin-bottom: 4px;
 }
 
-.ViewSummary .view-entry .icon-button {
+.ViewSummary .view-entry .icon-button-wrapper {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.ViewSummary .view-entry .icon-button-wrapper .icon-button {
   margin-top: 6px;
 }
 
@@ -208,12 +215,12 @@
   color: white;
 }
 
-.ViewSummary .view-entry.checked small {
-  color: white;
+.ViewSummary .view-entry.checked .content .icon-button-wrapper {
+  /*vertical-align: baseline;*/
 }
 
-.ViewSummary .view-entry.checked .content {
-  /*display: none;*/
+.ViewSummary .view-entry.checked small {
+  color: white;
 }
 
 .ViewSummary .view-entry.checked .content .input {

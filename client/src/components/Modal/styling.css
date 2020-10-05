@@ -71,7 +71,7 @@
   border-bottom: #e1e1e1 1px solid;
 }
 
-.Modal > .modal-body > .body-top > .search-input {
+.Modal > .modal-body .search-input {
   margin-right: 8px;
 }
 .Modal .content-list {
