@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import getCompactAmount from '../../util/getCompactAmount';
 import {getUnitFromIngredientType} from '../../util/IngredientFormat';
+import LocalStorageKeys from '../../util/LocalStorageKeys';
 import Icon from '../Icon/Icon';
 import SummaryModal from '../Modal/SummaryModal';
 import View from './View';
@@ -13,6 +14,9 @@ const NodeTypes = {
 
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
   const [modalData, setModalData] = useState(null);
+  const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
+
+  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
 
   const ingredientMaxDepths = {};
   const ingredientTypes = {};
@@ -49,7 +53,8 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   });
 
   const ingredientAmounts = {};
-  Object.entries(recipeTreeRoots).forEach(([ingredientId, ingredient]) => ingredientAmounts[ingredientId] = ingredient.amount);
+  Object.entries(recipeTreeRoots)
+    .forEach(([ingredientId, ingredient]) => ingredientAmounts[ingredientId] = ingredient.amount);
 
   const list = Object.entries(ingredientMaxDepths).map(([ingredientId, depth]) => {
     const {recipe} = recipeMapping[ingredientId] || {};
@@ -70,8 +75,16 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   }).map(({ingredientId, recipe, depth}) => {
     let neededAmount = ingredientAmounts[ingredientId];
 
-    if(!recipe) {
-      return {ingredientId, recipe, depth, totalOutputAmount: neededAmount, overhead: 0, timesToCraft: 1, nodeType: NodeTypes.LEAF};
+    if (!recipe) {
+      return {
+        ingredientId,
+        recipe,
+        depth,
+        totalOutputAmount: neededAmount,
+        overhead: 0,
+        timesToCraft: 1,
+        nodeType: NodeTypes.LEAF
+      };
     }
 
     const recipeOutputAmount = recipe.outputs.find((output) => output.id === ingredientId).amount;
@@ -86,7 +99,15 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       ingredientAmounts[input.id] += input.amount * timesToCraft;
     });
 
-    return {ingredientId, recipe, depth, totalOutputAmount, overhead, timesToCraft, nodeType: recipeTreeRoots[ingredientId] ? NodeTypes.ROOT : NodeTypes.INTERMEDIATE};
+    return {
+      ingredientId,
+      recipe,
+      depth,
+      totalOutputAmount,
+      overhead,
+      timesToCraft,
+      nodeType: recipeTreeRoots[ingredientId] ? NodeTypes.ROOT : NodeTypes.INTERMEDIATE
+    };
   }).reverse();
 
   const groups = {};
@@ -130,8 +151,8 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
             const title = `Amount: ${amount + ' ' + unit} | Click to ${recipe ? 'change' : 'add a'} mapping`;
             amount = getCompactAmount(amount, ingredientTypes[ingredientId]);
 
-            return <div className={'view-entry ' + nodeType} key={ingredientId}
-                        onClick={() => onClickElement({id: ingredientId})}
+            return <div className={'view-entry ' + nodeType + (checkboxState[ingredientId] ? ' checked' : '')} key={ingredientId}
+                        onClick={() => onClickElement({id: ingredientId, name: ingredientNames[ingredientId]})}
                         title={title}>
               <div className={'content ' + (nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
                 <span className={(nodeType !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
@@ -157,6 +178,16 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                     </div>;
                   }) : null}
                 </div> : null}
+              </div>
+              <div className='icon-button-wrapper'>
+                <div>
+                  <Icon type={checkboxState[ingredientId] ? 'check_box' : 'check_box_outline_blank'} className='icon-button'
+                        title={checkboxState[ingredientId] ? 'Undo marking task as \'done\'' : 'Mark task as \'done\''}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCheckboxState((state) => ({...state, [ingredientId]: !state[ingredientId]}));
+                        }}/>
+                </div>
               </div>
             </div>;
           })}

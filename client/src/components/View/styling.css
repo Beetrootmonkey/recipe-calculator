@@ -192,3 +192,30 @@
   margin-top: 4px;
   margin-bottom: 4px;
 }
+
+.ViewSummary .view-entry .icon-button {
+  margin-top: 6px;
+}
+
+.ViewSummary .view-entry.checked {
+  /*opacity: 0.75;*/
+  background-color: rgba(50, 205, 50, 0.8);
+  color: white;
+  font-weight: 600;
+}
+
+.ViewSummary .view-entry.checked .icon-button {
+  color: white;
+}
+
+.ViewSummary .view-entry.checked small {
+  color: white;
+}
+
+.ViewSummary .view-entry.checked .content {
+  /*display: none;*/
+}
+
+.ViewSummary .view-entry.checked .content .input {
+  display: none;
+}
