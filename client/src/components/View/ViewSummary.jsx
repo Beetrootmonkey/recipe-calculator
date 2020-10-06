@@ -94,7 +94,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
         totalOutputAmount: neededAmount,
         overhead: 0,
         timesToCraft: 1,
-        nodeType: NodeTypes.LEAF
+        nodeType: recipeTreeRoots[ingredientId] ? NodeTypes.ROOT : NodeTypes.LEAF
       };
     }
 
@@ -167,8 +167,6 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       </div>
     </Modal>;
   }
-
-  console.log('recipeListDisplayType', recipeListDisplayType);
 
   return <View className='ViewSummary'>
     <div className='view-header'>

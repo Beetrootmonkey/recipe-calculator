@@ -55,11 +55,6 @@
   vertical-align: middle;
 }
 
-.ViewTree > .view-header .Button {
-  width: 30px;
-  height: 30px;
-}
-
 .View > .view-body {
   overflow-x: hidden;
 }

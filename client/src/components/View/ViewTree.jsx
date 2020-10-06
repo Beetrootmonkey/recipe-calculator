@@ -67,7 +67,9 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
               'You can choose how these items are crafted though clicking here or in \'Tasks\'. This view is more or ' +
               'less just an overview of the recipe structure. Use \'Tasks\' to gather and process items.'}/></small>
       </div>
-      <Button onClick={onClickButton} title='Click to add an item'>+</Button>
+      <span>
+        <Button size='big' onClick={onClickButton}>Add item</Button>
+      </span>
     </div>
     <div className='view-body'>
       {list.map((ingredient, index) => {

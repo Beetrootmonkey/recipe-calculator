@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "GT:NH Recipe Calculator",
+  "name": "Minecraft Recipe Calculator for Gregtech: New Horizons",
   "icons": [
     {
       "src": "favicon.ico",
