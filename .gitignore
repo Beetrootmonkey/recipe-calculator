@@ -113,3 +113,5 @@ icons/
 mod_content/
 mod_assets/
 data.json
+build/
+public/
