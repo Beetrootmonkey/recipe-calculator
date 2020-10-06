@@ -98,21 +98,21 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
                 <td>{e.type}</td>
                 <td>{e.inputs.map((ingredient) => {
                   const unit = getUnitFromIngredientType(ingredient.type);
-                  return <span key={ingredient.id} className='ingredient'
+                  return <div key={ingredient.id} className='ingredient'
                                title={getTitleForIngredient(ingredient)}>
-                    {ingredient.amount ? <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small> : null}
                     <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
                     <span>{ingredient.name}</span>
-                  </span>;
+                    {ingredient.amount ? <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small> : null}
+                  </div>;
                 })}</td>
                 <td>{e.outputs.map((ingredient) => {
                   const unit = getUnitFromIngredientType(ingredient.type);
-                  return <span className='ingredient' key={ingredient.id}
+                  return <div className='ingredient' key={ingredient.id}
                                title={getTitleForIngredient(ingredient)}>
-                    {ingredient.amount ? <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small> : null}
                     <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
                     <span>{ingredient.name}</span>
-                  </span>;
+                    {ingredient.amount ? <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small> : null}
+                  </div>;
                 })}</td>
               </tr>;
             })}

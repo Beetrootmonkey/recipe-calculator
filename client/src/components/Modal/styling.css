@@ -58,7 +58,7 @@
 
 .Modal.RecipeModal img {
   margin-bottom: -2px;
-  margin-right: 2px;
+  margin-right: 4px;
 }
 
 .RecipeModal {
@@ -74,6 +74,7 @@
 .Modal > .modal-body .search-input {
   margin-right: 8px;
 }
+
 .Modal .content-list {
   margin-right: -8px;
   overflow-y: scroll;
@@ -101,7 +102,7 @@
 
 .Modal .content-list tr small {
   color: #969696;
-  margin-right: 4px;
+  margin-left: 4px;
 }
 
 .Modal .content-list tr:hover small {
@@ -116,7 +117,8 @@
 .Modal.RecipeModal .ingredient {
   background-color: rgba(100, 149, 237, 0.2);
   border-radius: 2px;
-  margin-right: 4px;
+  /*margin-right: 4px;*/
+  width: fit-content;
 }
 
 .Modal.RecipeModal .ingredient:hover {
@@ -125,4 +127,8 @@
 
 .Modal.clear-everything {
   width: 400px;
+}
+
+.SummaryModal input {
+  width: 64px;
 }

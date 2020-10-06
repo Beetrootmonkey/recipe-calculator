@@ -195,13 +195,11 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
             let info;
 
             const unit = getUnitFromIngredientType(ingredientTypes[ingredientId]);
-            let amount = totalOutputAmount - overhead;
-            if (overhead) {
-              info = '(+' + (overhead) + (unit ? ' ' + unit : '') + ')';
-            }
+            let amount = totalOutputAmount;
 
-            const title = `Amount: ${amount + ' ' + unit} | Click to ${recipe ? 'change' : 'add a'} mapping`;
-            const amountText = getCompactAmount(amount, ingredientTypes[ingredientId]);
+            const title = `Click to ${recipe ? 'change' : 'add a'} recipe`;
+            const amountTextLeft = getCompactAmount(amount, ingredientTypes[ingredientId]);
+            const amountTextTotal = ingredientsInStock[ingredientId] ? getCompactAmount(amount + ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) : amountTextLeft;
 
             return <div className={'view-entry ' + group + (checkboxState[ingredientId] ? ' checked' : '')}
                         key={ingredientId}
@@ -210,19 +208,19 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
               <div className={'content ' + (group !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
                 <span className={(group !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
                   <img src={'/icons/' + name} alt='' width="24" height="24"/>
-                  <small>{amountText}</small>
-                  {info ? <small>{info}</small> : null}
                   <span className={recipeTreeRoots[ingredientId] ? 'item-name-big' : ''}>{recipeTreeRoots[ingredientId] ? '[Tracked item] ' + name : name}</span>
-                  {ingredientsInStock[ingredientId] ?
-                    <small>{' (+' + getCompactAmount(ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) + ' in stock)'}</small> : null}
-                  {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ? <small>{'via ' + recipe.type}</small> : null}
+                  <small>{group === 'Gather' ? amountTextTotal : amountTextLeft}</small>
+                  {amountTextTotal !== amountTextLeft && !checkboxState[ingredientId] && group === 'Gather' ? <small>{'(left: ' + (amountTextLeft || 'none') + ')'}</small> : null}
+                  {/*{ingredientsInStock[ingredientId] ?*/}
+                  {/*  <small>{' (+' + getCompactAmount(ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) + ' in stock)'}</small> : null}*/}
+                  {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ? <small><i>{'[via ' + recipe.type + ']'}</i></small> : null}
                 </span>
                 {group !== NodeTypes.LEAF ? <div className='input'>
                   {recipe ? recipe.inputs.map((input) => {
                     return <div key={input.id}>
                       <img src={'/icons/' + input.name} alt='' width="24" height="24"/>
-                      {input.amount ? <small>{getCompactAmount(input.amount * timesToCraft, input.type)}</small> : null}
                       {input.name}
+                      {input.amount ? <small>{getCompactAmount(input.amount * timesToCraft, input.type)}</small> : null}
                     </div>;
                   }) : null}
                 </div> : null}
@@ -242,14 +240,18 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                               id: ingredientId,
                               name: ingredientNames[ingredientId],
                               type: ingredientTypes[ingredientId],
-                              amount,
+                              amount: amount + (ingredientsInStock[ingredientId] || 0),
                               amountInStock: ingredientsInStock[ingredientId],
                               inStock: true,
                               onConfirm: (newAmount) => {
+                                const val = Math.min(Math.max(amount + (ingredientsInStock[ingredientId] || 0), 0), newAmount);
                                 setIngredientsInStock((state) => ({
                                   ...state,
-                                  [ingredientId]: Math.min(Math.max(amount, 0), newAmount)
+                                  [ingredientId]: val
                                 }));
+                                if (val === Math.max(amount + (ingredientsInStock[ingredientId] || 0), 0)) {
+                                  setCheckboxState((state) => ({...state, [ingredientId]: true}))
+                                }
                               }
                             });
                           }}/>}

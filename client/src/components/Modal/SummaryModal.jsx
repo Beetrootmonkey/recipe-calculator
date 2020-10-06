@@ -44,7 +44,7 @@ const SummaryModal = ({ingredient, closeModal, onConfirm, inStock, amountInStock
     <div className='modal-body'>
       <div className='body'>
         <input className='search-input' type='number' autoFocus value={inputValue}
-               placeholder={inStock ? 'In stock' : 'Amount'}
+               placeholder={inStock ? 'In stock' : 'Amount'} min={0} max={ingredient.amount}
                onChange={(e) => setInputValue(e.target.value.toLowerCase())}/>
         {infoText}
       </div>

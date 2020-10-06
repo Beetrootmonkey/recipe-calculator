@@ -46,7 +46,7 @@ const App = () => {
   }
 
   return <div className="App">
-    <Navbar title='GT:NH Recipe Calculator v1.0.1'/>
+    <Navbar title='GT:NH Recipe Calculator v1.0.2'/>
     <div className='content'>
       <div className='body'>
         {/*<ViewMapping onClickButton={() => setIngredientModalData(CreationIntent.CREATE_MAPPING)}*/}
