@@ -107,6 +107,7 @@ dist
 # IntelliJ IDEA
 .idea/
 client/src/.idea/
+client/build/
 data.db
 icons/
 mod_content/

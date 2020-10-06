@@ -214,7 +214,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                   {info ? <small>{info}</small> : null}
                   <span className={recipeTreeRoots[ingredientId] ? 'item-name-big' : ''}>{recipeTreeRoots[ingredientId] ? '[Tracked item] ' + name : name}</span>
                   {ingredientsInStock[ingredientId] ?
-                    <small>{' (' + ingredientsInStock[ingredientId] + ' in stock)'}</small> : null}
+                    <small>{' (+' + getCompactAmount(ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) + ' in stock)'}</small> : null}
                   {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ? <small>{'via ' + recipe.type}</small> : null}
                 </span>
                 {group !== NodeTypes.LEAF ? <div className='input'>

@@ -3,11 +3,11 @@ const getCompactAmount = (amount, ingredientType) => {
     if (amount < Math.pow(1000, 1)) {
       return amount + ' mB';
     } else if (amount < Math.pow(1000, 2)) {
-      return ((amount / Math.pow(1000, 1)) + '').substr(0, 4) + ' B';
+      return ((amount / Math.pow(1000, 1)) + '').substr(0, 5) + ' B';
     } else if (amount < Math.pow(1000, 3)) {
-      return ((amount / Math.pow(1000, 2)) + '').substr(0, 4) + ' kB';
+      return ((amount / Math.pow(1000, 2)) + '').substr(0, 5) + ' kB';
     } else if (amount < Math.pow(1000, 4)) {
-      return ((amount / Math.pow(1000, 3)) + '').substr(0, 4) + ' MB';
+      return ((amount / Math.pow(1000, 3)) + '').substr(0, 5) + ' MB';
     }
   }
   const stacks = Math.floor(amount / 64);

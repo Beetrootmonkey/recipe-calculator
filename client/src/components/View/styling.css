@@ -200,12 +200,16 @@
 
 .ViewSummary .view-entry:not( .checked) .process-header {
   border-bottom: #e1e1e1 1px solid;
-  margin-bottom: 4px;
+  /*margin-bottom: 4px;*/
 }
 
-.ViewSummary .view-entry:not( .checked) > .process {
-  margin-top: 6px;
-  margin-bottom: 10px;
+.ViewSummary .view-entry:not(.Gather) {
+  padding-top: 4px;
+  padding-bottom: 8px;
+}
+
+.ViewSummary .view-entry:not(.Gather).checked {
+  padding-bottom: 4px;
 }
 
 .ViewSummary .view-entry > .ingredient {
