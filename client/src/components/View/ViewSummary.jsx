@@ -158,12 +158,14 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       </div>
       <div className='modal-footer'>
         <Button size='big' onClick={() => setClearEverythingModalData(false)}>Close</Button>
-        {(checkboxState != null && Object.keys(checkboxState).length > 0) || (ingredientsInStock != null && Object.keys(ingredientsInStock).length > 0) ? <Button size='big' onClick={() => {
-          setClearEverythingModalData(false);
-          setIngredientsInStock({});
-          setCheckboxState({});
-        }}>Yes, continue
-        </Button> : <span/>}
+        {(checkboxState != null && Object.keys(checkboxState).length > 0) || (ingredientsInStock != null && Object.keys(ingredientsInStock).length > 0)
+          ? <Button size='big' onClick={() => {
+            setClearEverythingModalData(false);
+            setIngredientsInStock({});
+            setCheckboxState({});
+          }}>Yes, continue
+          </Button>
+          : <span/>}
       </div>
     </Modal>;
   }
@@ -187,7 +189,15 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       </span>
     </div>
     <div className='view-body'>
-      {Object.entries(groups).map(([group, ingredientList]) => {
+      {Object.entries(groups).sort(([groupA], [groupB]) => {
+        if (groupA === 'Gather') {
+          return -1;
+        }
+        if (groupB === 'Gather') {
+          return 1;
+        }
+        return groupA < groupB ? -1 : 1;
+      }).map(([group, ingredientList]) => {
         return <div key={group}>
           <div className='view-summary-group'>{group}</div>
           {ingredientList.map(({ingredientId, recipe, depth, totalOutputAmount, overhead, timesToCraft}) => {
@@ -199,7 +209,9 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
             const title = `Click to ${recipe ? 'change' : 'add a'} recipe`;
             const amountTextLeft = getCompactAmount(amount, ingredientTypes[ingredientId]);
-            const amountTextTotal = ingredientsInStock[ingredientId] ? getCompactAmount(amount + ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) : amountTextLeft;
+            const amountTextTotal = ingredientsInStock[ingredientId]
+              ? getCompactAmount(amount + ingredientsInStock[ingredientId], ingredientTypes[ingredientId])
+              : amountTextLeft;
 
             return <div className={'view-entry ' + group + (checkboxState[ingredientId] ? ' checked' : '')}
                         key={ingredientId}
@@ -208,12 +220,16 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
               <div className={'content ' + (group !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
                 <span className={(group !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
                   <img src={'/icons/' + name} alt='' width="24" height="24"/>
-                  <span className={recipeTreeRoots[ingredientId] ? 'item-name-big' : ''}>{recipeTreeRoots[ingredientId] ? '[Tracked item] ' + name : name}</span>
+                  <span className={recipeTreeRoots[ingredientId] ? 'item-name-big' : ''}>{recipeTreeRoots[ingredientId]
+                    ? '[Tracked item] ' + name
+                    : name}</span>
                   <small>{group === 'Gather' ? amountTextTotal : amountTextLeft}</small>
-                  {amountTextTotal !== amountTextLeft && !checkboxState[ingredientId] && group === 'Gather' ? <small>{'(left: ' + (amountTextLeft || 'none') + ')'}</small> : null}
+                  {amountTextTotal !== amountTextLeft && !checkboxState[ingredientId] && group === 'Gather' ?
+                    <small>{'(left: ' + (amountTextLeft || 'none') + ')'}</small> : null}
                   {/*{ingredientsInStock[ingredientId] ?*/}
                   {/*  <small>{' (+' + getCompactAmount(ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) + ' in stock)'}</small> : null}*/}
-                  {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ? <small><i>{'[via ' + recipe.type + ']'}</i></small> : null}
+                  {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ?
+                    <small><i>{'[via ' + recipe.type + ']'}</i></small> : null}
                 </span>
                 {group !== NodeTypes.LEAF ? <div className='input'>
                   {recipe ? recipe.inputs.map((input) => {
@@ -250,7 +266,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                                   [ingredientId]: val
                                 }));
                                 if (val === Math.max(amount + (ingredientsInStock[ingredientId] || 0), 0)) {
-                                  setCheckboxState((state) => ({...state, [ingredientId]: true}))
+                                  setCheckboxState((state) => ({...state, [ingredientId]: true}));
                                 }
                               }
                             });
