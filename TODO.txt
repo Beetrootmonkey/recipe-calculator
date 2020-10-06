@@ -5,7 +5,22 @@
 - Fehlende Icons
 - Output-Chancen
 - Tutorial, bessere Erklärung
-- Fix Kreisreferenzen
+- Fix Kreisreferenzen: Rezepte, die Vorfahren als Inputs enthalten, dürfen nicht ausgewählt werden
 - Cables/Wires mit Menge im Namen ("1x Copper Cable") sind mega verwirrend
-- Unterstützung Firefox, Opera, Edge, Safari etc
+- Unterstützung Fi refox, Opera, Edge, Safari etc
 - Versionsnummer nicht mehr hardcodiert in den Titel packen
+- Fix für die ganzen als 'schwarz' erkannten Wildcard-Vanilla-Items
+- Gruppierung nach Maschine soll nach Maschinennamen laufen
+- Auto-Select basierend auf...
+  - Schnellster Maschine
+  - Geringster Energieverbrauch
+  - Kleiner Voltage Tier
+  - Höchster Voltage Tier
+  - Via Angabe eines Voltage Tiers als default
+  - Via "Meine Maschinen", die man ausdefinieren kann
+- Modals könne bereits via Escape geschlossen werden
+- Root auto-expanded, wenn nur 1 Rezept vorhanden
+- Gruppierung/Sortierung für Rezepte/Items
+- Rezepte: Weitere Filtermöglichkeiten
+  - Inputs temporär blacklisten
+  - Outputs temporär/permanent blacklisten
