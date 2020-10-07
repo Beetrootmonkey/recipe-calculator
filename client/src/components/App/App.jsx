@@ -13,9 +13,11 @@ const App = () => {
   const [recipeModalData, setRecipeModalData] = useState(null);
   const [recipeMapping, setRecipeMapping] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.RECIPE_MAPPING)) || {});
   const [recipeTreeRoots, setRecipeTreeRoots] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.TREE_ROOTS)) || {});
+  const [nodesClosedState, setNodesClosedState] = useState(JSON.parse(window.localStorage.getItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE)) || {});
 
   useEffect(() => localStorage.setItem(LocalStorageKeys.RECIPE_MAPPING, JSON.stringify(recipeMapping)), [recipeMapping]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.TREE_ROOTS, JSON.stringify(recipeTreeRoots)), [recipeTreeRoots]);
+  useEffect(() => localStorage.setItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE, JSON.stringify(nodesClosedState)), [nodesClosedState]);
 
   let ingredientModal = null;
   if (ingredientModalData) {
@@ -58,7 +60,7 @@ const App = () => {
         {/*             })}/>*/}
         <ViewTree onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                   onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                  recipeTreeRoots={recipeTreeRoots}
+                  recipeTreeRoots={recipeTreeRoots} nodesClosedState={nodesClosedState} setNodesClosedState={setNodesClosedState}
                   onRemoveElement={(ingredientId) => setRecipeTreeRoots((state) => {
                     const newState = {...state};
                     delete newState[ingredientId];
@@ -66,7 +68,7 @@ const App = () => {
                   })}/>
         <ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
                      onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                     recipeTreeRoots={recipeTreeRoots}
+                     recipeTreeRoots={recipeTreeRoots} nodesClosedState={nodesClosedState}
                      onSetAmount={(ingredient, amount) => setRecipeTreeRoots((state) => ({
                        ...state,
                        [ingredient.id]: {...ingredient, amount}

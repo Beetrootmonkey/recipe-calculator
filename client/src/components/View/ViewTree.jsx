@@ -11,10 +11,7 @@ const NodeTypes = {
   STUMP: 'Stump'
 };
 
-const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping, recipeTreeRoots}) => {
-  const [nodesClosedState, setNodesClosedState] = useState(JSON.parse(window.localStorage.getItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE)) || {});
-  // TODO: Nur mittelmäßig geil, dass die Einträge der selben Zutat sich immer alle auf einmal öffnen/schließen
-  useEffect(() => localStorage.setItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE, JSON.stringify(nodesClosedState)), [nodesClosedState]);
+const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping, recipeTreeRoots, nodesClosedState, setNodesClosedState}) => {
 
   const list = [];
   const addInput = (ingredient, path, registeredIngredients = {}) => {
@@ -74,7 +71,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     <div className='view-body'>
       {list.map((ingredient, index) => {
         const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
-        return <div className={'view-entry ' + ingredient.nodeType} key={ingredient.id + '-' + index}
+        return <div className={'view-entry ' + ingredient.nodeType + (nodesClosedState[ingredient.id] ? ' closed' : ' open')} key={ingredient.id + '-' + index}
                     onClick={() => onClickElement(ingredient)}
                     title={title}>
           <div>

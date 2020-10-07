@@ -185,6 +185,19 @@
   margin-top: 8px;
 }
 
+.ViewTree .view-entry.closed {
+  background-color: rgba(127, 122, 120, 0.8);
+  color: white;
+}
+
+.ViewTree .view-entry.closed small {
+  color: white;
+}
+
+.ViewTree .view-entry.closed .Icon {
+  color: white;
+}
+
 .View img {
   margin-bottom: -4px;
   margin-right: 4px;

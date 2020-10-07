@@ -24,7 +24,7 @@ const RecipeListDisplayTypes = {
   GROUPED_BY_TYPE: 'GROUPED_BY_TYPE'
 };
 
-const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount}) => {
+const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount, nodesClosedState}) => {
   const [modalData, setModalData] = useState(null);
   const [clearEverythingModalData, setClearEverythingModalData] = useState(false);
   const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
@@ -39,6 +39,9 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   const ingredientTypes = {};
   const ingredientNames = {};
   const addInput = (ingredient, depth) => {
+    if (nodesClosedState[ingredient.id]) {
+      return;
+    }
     ingredientTypes[ingredient.id] = ingredient.type;
     ingredientNames[ingredient.id] = ingredient.name;
     if (ingredientMaxDepths[ingredient.id] == null) {
