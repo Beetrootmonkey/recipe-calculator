@@ -25,7 +25,12 @@
   - Inputs temporär blacklisten
   - Outputs temporär/permanent blacklisten
 - Wasser in Cutting Machine-Rezepten und Ähnlichem in "Gather" nicht anzeigen
-- Dinge, die sich nicht verbrauchen (Tools, Molds, etc) auch in "Gather" nicht anzeigen
 - Zuklappen auch in den Tasks ermöglichen
 - Beim Auto-Select vllt bei Rezepten, die es identisch im Crafting Table bzw. Assembler gibt, automatisch den Crafting Table auswählen
-- Tasks als "In Progress" markieren können
+- Import/Export des localStorage (als .json)
+- Kollabierte Items (links) rechts irgendwie markieren
+- Tasks > Kontextmenü: "Show in tree" highlightet entsprechende Einträge kurz und scrollt sie into view
+- Ore Dict-Tasks ausblenden
+- Nur machbare Tasks anzeigen (basierend auf bereits abgehakten Tasks)
+- Abgehakte Tasks erst grün, dann ausfaden
+- "Group by output"-Option

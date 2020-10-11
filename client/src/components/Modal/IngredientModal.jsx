@@ -46,7 +46,6 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
   }
 
   return <Modal className='IngredientModal' onKeyDown={(e) => {
-    console.log('KEY', e.key, e.key === 'Escape');
     if (e.key === 'Escape') {
       closeModal();
       setSearchInputValue('');

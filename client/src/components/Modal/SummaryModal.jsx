@@ -58,7 +58,10 @@ const SummaryModal = ({ingredient, closeModal, onConfirm, inStock, amountInStock
       <Button size='big' onClick={() => {
         closeModal();
         setInputValue('');
-        onConfirm(amount);
+        const val = parseInt(amount, 10);
+        if (val != null && !isNaN(val)) {
+          onConfirm(val);
+        }
       }}>Accept
       </Button>
     </div>

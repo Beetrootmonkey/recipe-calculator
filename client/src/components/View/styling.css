@@ -55,6 +55,31 @@
   vertical-align: middle;
 }
 
+.View > .view-header > .icon-button-wrapper {
+  margin-right: 8px;
+}
+
+.View > .view-header .Icon:not(.help-icon) {
+  vertical-align: middle;
+  font-size: 24px;
+  color: #969696;
+  border-radius: 4px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.View > .view-header .Icon:not(.help-icon).active {
+  color: cornflowerblue;
+}
+
+.View > .view-header .Icon:not(.help-icon):hover {
+  background-color: rgba(100, 149, 237, 0.2);
+}
+
+.View > .view-header .Icon:not(.help-icon):active {
+  background-color: rgba(100, 149, 237, 0.4);
+}
+
 .View > .view-body {
   overflow-x: hidden;
 }
@@ -152,6 +177,11 @@
 .ViewSummary .view-entry {
   display: flex;
   cursor: pointer;
+  transition: opacity 0.4s ease-out;
+}
+
+.ViewSummary .view-entry.fading {
+  opacity: 0;
 }
 
 .ViewSummary .view-entry .spacer {
@@ -220,7 +250,7 @@
   padding-bottom: 8px;
 }
 
-.ViewSummary .view-entry:not(.Gather).checked {
+.ViewSummary .view-entry:not(.Gather):not(.unchecked) {
   padding-bottom: 4px;
 }
 
@@ -234,10 +264,13 @@
 }
 
 .ViewSummary .view-entry.checked {
-  /*opacity: 0.75;*/
   background-color: rgba(50, 205, 50, 0.8);
   color: white;
-  /*font-weight: 600;*/
+}
+
+.ViewSummary .view-entry.in-progress {
+  background-color: rgba(240, 214, 18, 0.6);
+  /*color: white;*/
 }
 
 .ViewSummary .view-entry.checked .icon-button {

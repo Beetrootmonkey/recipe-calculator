@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import getCompactAmount from '../../util/getCompactAmount';
-import {getUnitFromIngredientType} from '../../util/IngredientFormat';
 import LocalStorageKeys from '../../util/LocalStorageKeys';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
@@ -24,24 +23,48 @@ const RecipeListDisplayTypes = {
   GROUPED_BY_TYPE: 'GROUPED_BY_TYPE'
 };
 
+const CheckboxStates = {
+  UNCHECKED: 'UNCHECKED',
+  INDETERMINATE: 'INDETERMINATE',
+  CHECKED: 'CHECKED'
+};
+
+const importOldBooleanCheckboxState = () => {
+  const oldState = JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {};
+  const newState = {};
+  Object.entries(oldState).forEach(([ingredientId, oldValue]) => {
+    if (oldValue === true) {
+      newState[ingredientId] = CheckboxStates.CHECKED;
+    } else if (oldValue === false) {
+      newState[ingredientId] = CheckboxStates.UNCHECKED;
+    } else {
+      newState[ingredientId] = oldValue;
+    }
+  });
+
+  return newState;
+};
+
 const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount, nodesClosedState}) => {
   const [modalData, setModalData] = useState(null);
   const [clearEverythingModalData, setClearEverythingModalData] = useState(false);
-  const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
+  const [checkboxState, setCheckboxState] = useState(importOldBooleanCheckboxState());
   const [ingredientsInStock, setIngredientsInStock] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK)) || {});
   const [recipeListDisplayType, setRecipeListDisplayType] = useState(localStorage.getItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE) || RecipeListDisplayTypes.IN_ORDER);
+  const [hideCompletedTasks, setHideCompletedTasks] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS)) || false);
+  const [hideTools, setHideTools] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS)) || false);
+  const [fadingState, setFadingState] = useState({});
 
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK, JSON.stringify(ingredientsInStock)), [ingredientsInStock]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE, recipeListDisplayType), [recipeListDisplayType]);
+  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS, JSON.stringify(hideCompletedTasks)), [hideCompletedTasks]);
+  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS, JSON.stringify(hideTools)), [hideTools]);
 
   const ingredientMaxDepths = {};
   const ingredientTypes = {};
   const ingredientNames = {};
   const addInput = (ingredient, depth) => {
-    if (nodesClosedState[ingredient.id]) {
-      return;
-    }
     ingredientTypes[ingredient.id] = ingredient.type;
     ingredientNames[ingredient.id] = ingredient.name;
     if (ingredientMaxDepths[ingredient.id] == null) {
@@ -51,7 +74,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     }
 
     const {recipe} = recipeMapping[ingredient.id] || {};
-    if (recipe) {
+    if (recipe && !nodesClosedState[ingredient.id]) {
       if (recipe.inputs) {
         recipe.inputs.forEach((input) => addInput({
           ...input
@@ -72,7 +95,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
   const list = Object.entries(ingredientMaxDepths).map(([ingredientId, depth]) => {
     const {recipe} = recipeMapping[ingredientId] || {};
-    if (recipe) {
+    if (recipe && !nodesClosedState[ingredientId]) {
       return {ingredientId, recipe, depth};
     } else {
       // Leaf = atomic ingredient without a recipe
@@ -126,6 +149,13 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
   const groups = {};
   list.forEach(({nodeType, ...props}) => {
+    if (hideCompletedTasks && checkboxState[props.ingredientId] === CheckboxStates.CHECKED) {
+      return;
+    }
+    if (hideTools && !ingredientAmounts[props.ingredientId]) {
+      return;
+    }
+
     let type = nodeType;
     if (recipeListDisplayType === RecipeListDisplayTypes.GROUPED_BY_TYPE) {
       type = props.recipe ? props.recipe.type : nodeType;
@@ -173,6 +203,8 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     </Modal>;
   }
 
+  console.log('ingredientAmounts', ingredientAmounts);
+
   return <View className='ViewSummary'>
     <div className='view-header'>
       <span className='title'><h2>Tasks</h2><small>
@@ -182,6 +214,20 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
               'the pencil button next to ingredients. Click the pencil button next to the tracked item (\'Root\') to ' +
               'change the amount you want to craft. Use the \'Clear\' button to reset stock and checkbox data.'}/></small>
       </span>
+      <div className='icon-button-wrapper'>
+        <Icon type='format_paint'
+              className={'icon-button big' + (!hideTools ? ' active' : '')}
+              title={!hideTools ? 'Click to hide tools in \'Gather\'' : 'Click to show tools in \'Gather\''}
+              onClick={() => setHideTools(!hideTools)}
+        />
+      </div>
+      <div className='icon-button-wrapper'>
+        <Icon type='done_all'
+              className={'icon-button big' + (!hideCompletedTasks ? ' active' : '')}
+              title={!hideCompletedTasks ? 'Click to hide completed tasks' : 'Click to keep/show completed tasks'}
+              onClick={() => setHideCompletedTasks(!hideCompletedTasks)}
+        />
+      </div>
       <span className='spacer'/>
       <select value={recipeListDisplayType} onChange={(e) => setRecipeListDisplayType(e.target.value)}>
         <option value={RecipeListDisplayTypes.IN_ORDER}>{RecipeListDisplayOptions.IN_ORDER}</option>
@@ -203,11 +249,43 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       }).map(([group, ingredientList]) => {
         return <div key={group}>
           <div className='view-summary-group'>{group}</div>
-          {ingredientList.map(({ingredientId, recipe, depth, totalOutputAmount, overhead, timesToCraft}) => {
-            let name = ingredientNames[ingredientId];
-            let info;
+          {ingredientList.sort(({ingredientId: ingredientIdA}, {ingredientId: ingredientIdB}) => {
+            if (group === 'Gather') {
+              const nameA = ingredientNames[ingredientIdA];
+              const nameB = ingredientNames[ingredientIdB];
+              const amountA = ingredientAmounts[ingredientIdA];
+              const amountB = ingredientAmounts[ingredientIdB];
+              const typeA = ingredientTypes[ingredientIdA];
+              const typeB = ingredientTypes[ingredientIdB];
 
-            const unit = getUnitFromIngredientType(ingredientTypes[ingredientId]);
+              if (nameA === nameB || (!nameA.includes('Ingot') && !nameB.includes('Ingot')) || (nameA.includes('Ingot') && nameB.includes('Ingot'))) {
+                if (typeA === typeB) {
+                  if (amountA === amountB) {
+                    return ingredientIdA < ingredientIdB ? -1 : 1;
+                  } else if (amountA < amountB) {
+                    return -1;
+                  } else {
+                    return 1;
+                  }
+                } else if (typeA === 'ITEM') {
+                  return -1;
+                } else if (typeB === 'ITEM') {
+                  return 1;
+                } else if (typeA === 'ORE DICT') {
+                  return -1;
+                } else {
+                  return 1;
+                }
+              } else if (nameA.includes('Ingot') && !nameB.includes('Ingot')) {
+                return -1;
+              } else if (!nameA.includes('Ingot') && nameB.includes('Ingot')) {
+                return 1;
+              }
+            }
+            return 0;
+          }).map(({ingredientId, recipe, depth, totalOutputAmount, overhead, timesToCraft}) => {
+            let name = ingredientNames[ingredientId];
+
             let amount = totalOutputAmount;
 
             const title = `Click to ${recipe ? 'change' : 'add a'} recipe`;
@@ -216,7 +294,11 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
               ? getCompactAmount(amount + ingredientsInStock[ingredientId], ingredientTypes[ingredientId])
               : amountTextLeft;
 
-            return <div className={'view-entry ' + group + (checkboxState[ingredientId] ? ' checked' : '')}
+            return <div className={'view-entry ' + group + (checkboxState[ingredientId] === CheckboxStates.CHECKED
+              ? ' checked'
+              : (checkboxState[ingredientId] === CheckboxStates.INDETERMINATE
+                ? ' in-progress'
+                : '')) + (fadingState[ingredientId] ? ' fading' : ' unchecked')}
                         key={ingredientId}
                         onClick={() => onClickElement({id: ingredientId, name: ingredientNames[ingredientId]})}
                         title={title}>
@@ -227,8 +309,10 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                     ? '[Tracked item] ' + name
                     : name}</span>
                   <small>{group === 'Gather' ? amountTextTotal : amountTextLeft}</small>
-                  {amountTextTotal !== amountTextLeft && !checkboxState[ingredientId] && group === 'Gather' ?
-                    <small>{'(left: ' + (amountTextLeft || 'none') + ')'}</small> : null}
+                  {amountTextTotal !== amountTextLeft && checkboxState[ingredientId] !== CheckboxStates.CHECKED && group === 'Gather'
+                    ?
+                    <small>{'(left: ' + (amountTextLeft || 'none') + ')'}</small>
+                    : null}
                   {/*{ingredientsInStock[ingredientId] ?*/}
                   {/*  <small>{' (+' + getCompactAmount(ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) + ' in stock)'}</small> : null}*/}
                   {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ?
@@ -268,22 +352,47 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                                   ...state,
                                   [ingredientId]: val
                                 }));
-                                if (val === Math.max(amount + (ingredientsInStock[ingredientId] || 0), 0)) {
-                                  setCheckboxState((state) => ({...state, [ingredientId]: true}));
-                                }
+                                // if (val === Math.max(amount + (ingredientsInStock[ingredientId] || 0), 0)) {
+                                //   setCheckboxState((state) => ({...state, [ingredientId]: CheckboxStates.CHECKED}));
+                                // }
                               }
                             });
                           }}/>}
               </span>
               <div className='icon-button-wrapper'>
                 <div>
-                  <Icon type={checkboxState[ingredientId] ? 'check_box' : 'check_box_outline_blank'}
+                  <Icon type={(checkboxState[ingredientId] === CheckboxStates.CHECKED
+                    ? 'check_box'
+                    : (checkboxState[ingredientId] === CheckboxStates.INDETERMINATE
+                      ? 'indeterminate_check_box'
+                      : 'check_box_outline_blank'))}
                         className={'icon-button big'}
-                        title={checkboxState[ingredientId] ? 'Undo marking task as \'done\'' : 'Mark task as \'done\''}
+                        title={(checkboxState[ingredientId] === CheckboxStates.CHECKED
+                          ? 'Mark task as \'open\''
+                          : (checkboxState[ingredientId] === CheckboxStates.INDETERMINATE
+                            ? 'Mark task as \'done\''
+                            : 'Mark task as \'in progress\''))}
                         onClick={(e) => {
                           e.stopPropagation();
-                          setIngredientsInStock((state) => ({...state, [ingredientId]: 0}));
-                          setCheckboxState((state) => ({...state, [ingredientId]: !state[ingredientId]}));
+                          if (fadingState[ingredientId]) {
+                            // Ignore
+                          } else if (checkboxState[ingredientId] === CheckboxStates.INDETERMINATE) {
+                            if (hideCompletedTasks) {
+                              setFadingState((state) => ({...state, [ingredientId]: true}));
+                              window.setTimeout(() => {
+                                setIngredientsInStock((state) => ({...state, [ingredientId]: 0}));
+                                setCheckboxState((state) => ({...state, [ingredientId]: CheckboxStates.CHECKED}));
+                                setFadingState((state) => ({...state, [ingredientId]: false}));
+                              }, 400);
+                            } else {
+                              setIngredientsInStock((state) => ({...state, [ingredientId]: 0}));
+                              setCheckboxState((state) => ({...state, [ingredientId]: CheckboxStates.CHECKED}));
+                            }
+                          } else if (checkboxState[ingredientId] === CheckboxStates.CHECKED) {
+                            setCheckboxState((state) => ({...state, [ingredientId]: !state[ingredientId]}));
+                          } else {
+                            setCheckboxState((state) => ({...state, [ingredientId]: CheckboxStates.INDETERMINATE}));
+                          }
                         }}/>
                 </div>
               </div>

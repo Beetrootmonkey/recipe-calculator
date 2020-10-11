@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import LocalStorageKeys from '../../util/LocalStorageKeys';
+import React from 'react';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
 import View from './View';
@@ -71,9 +70,11 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     <div className='view-body'>
       {list.map((ingredient, index) => {
         const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
-        return <div className={'view-entry ' + ingredient.nodeType + (nodesClosedState[ingredient.id] ? ' closed' : ' open')} key={ingredient.id + '-' + index}
-                    onClick={() => onClickElement(ingredient)}
-                    title={title}>
+        return <div
+          className={'view-entry ' + ingredient.nodeType + (nodesClosedState[ingredient.id] ? ' closed' : ' open')}
+          key={ingredient.id + '-' + index}
+          onClick={() => onClickElement(ingredient)}
+          title={title}>
           <div>
             {ingredient.path ? <small>{ingredient.path}</small> : null}
             {![NodeTypes.LEAF, NodeTypes.STUMP].includes(ingredient.nodeType)
