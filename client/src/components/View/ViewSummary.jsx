@@ -158,7 +158,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     if (hideCompletedTasks && checkboxState[props.ingredientId] === CheckboxStates.CHECKED) {
       return;
     }
-    if (hideTools && isTool) {
+    if (hideTools && isTool()) {
       return;
     }
     if (hideNonCompletableTasks && props.recipe && props.recipe.inputs.find((input) => checkboxState[input.id] !== CheckboxStates.CHECKED) && nodeType !== NodeTypes.ROOT) {
