@@ -53,6 +53,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   const [recipeListDisplayType, setRecipeListDisplayType] = useState(localStorage.getItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE) || RecipeListDisplayTypes.IN_ORDER);
   const [hideCompletedTasks, setHideCompletedTasks] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS)) || false);
   const [hideTools, setHideTools] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS)) || false);
+  const [hideNonCompletableTasks, setHideNonCompletableTasks] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_NON_COMPLETABLE_TASKS)) || false);
   const [fadingState, setFadingState] = useState({});
 
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
@@ -60,6 +61,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE, recipeListDisplayType), [recipeListDisplayType]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS, JSON.stringify(hideCompletedTasks)), [hideCompletedTasks]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS, JSON.stringify(hideTools)), [hideTools]);
+  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_NON_COMPLETABLE_TASKS, JSON.stringify(hideNonCompletableTasks)), [hideNonCompletableTasks]);
 
   const ingredientMaxDepths = {};
   const ingredientTypes = {};
@@ -159,7 +161,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
     if (hideTools && isTool) {
       return;
     }
-    if (hideCompletedTasks && props.recipe && props.recipe.inputs.find((input) => checkboxState[input.id] !== CheckboxStates.CHECKED)) {
+    if (hideNonCompletableTasks && props.recipe && props.recipe.inputs.find((input) => checkboxState[input.id] !== CheckboxStates.CHECKED) && nodeType !== NodeTypes.ROOT) {
       return;
     }
 
@@ -230,6 +232,13 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
               className={'icon-button big' + (!hideCompletedTasks ? ' active' : '')}
               title={!hideCompletedTasks ? 'Click to hide completed tasks' : 'Click to keep/show completed tasks'}
               onClick={() => setHideCompletedTasks(!hideCompletedTasks)}
+        />
+      </div>
+      <div className='icon-button-wrapper'>
+        <Icon type='watch_later'
+              className={'icon-button big' + (!hideNonCompletableTasks ? ' active' : '')}
+              title={!hideNonCompletableTasks ? 'Click to hide tasks that you cannot complete yet. This is based on the checkboxes of previous tasks.' : 'Click to keep/show tasks that you cannot complete yet. This is based on the checkboxes of previous tasks.'}
+              onClick={() => setHideNonCompletableTasks(!hideNonCompletableTasks)}
         />
       </div>
       <span className='spacer'/>
