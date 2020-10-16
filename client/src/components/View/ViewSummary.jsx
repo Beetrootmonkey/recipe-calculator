@@ -149,10 +149,17 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
   const groups = {};
   list.forEach(({nodeType, ...props}) => {
+    const isTool = () => {
+      return !ingredientAmounts[props.ingredientId];
+    };
+
     if (hideCompletedTasks && checkboxState[props.ingredientId] === CheckboxStates.CHECKED) {
       return;
     }
-    if (hideTools && !ingredientAmounts[props.ingredientId]) {
+    if (hideTools && isTool) {
+      return;
+    }
+    if (hideCompletedTasks && props.recipe && props.recipe.inputs.find((input) => checkboxState[input.id] !== CheckboxStates.CHECKED)) {
       return;
     }
 
@@ -176,7 +183,6 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   let clearEverythingModal;
   if (clearEverythingModalData) {
     clearEverythingModal = <Modal className='clear-everything' onKeyDown={(e) => {
-      console.log('KEY', e.key, e.key === 'Escape');
       if (e.key === 'Escape') {
         setClearEverythingModalData(false);
       }
@@ -202,8 +208,6 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       </div>
     </Modal>;
   }
-
-  console.log('ingredientAmounts', ingredientAmounts);
 
   return <View className='ViewSummary'>
     <div className='view-header'>

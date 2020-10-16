@@ -182,6 +182,9 @@
 
 .ViewSummary .view-entry.fading {
   opacity: 0;
+  /*Funzt nicht???*/
+  background-color: rgba(50, 205, 50, 0.8);
+  color: white;
 }
 
 .ViewSummary .view-entry .spacer {

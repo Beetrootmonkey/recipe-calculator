@@ -34,3 +34,9 @@
 - Nur machbare Tasks anzeigen (basierend auf bereits abgehakten Tasks)
 - Abgehakte Tasks erst grün, dann ausfaden
 - "Group by output"-Option
+- Voltage Mod-seitig durch Amperage teilen (die aber nicht bekannt ist)
+- "Projekte" mit anderen tracked items + tree + tasks, aber die selben hinterlegten rezepte
+- "Clear" soll tracked items mit wegwerfen
+- Brewing Stand hat Menge 0 in "Basic Brewer"
+- Items markieren, damit diese an allen Stellen und in allen Ansichten hervorgehoben werden
+- WTF-Funktion, die anzeigt, in welchen Steps ein angeklickten Item benutzt wird
