@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import getCompactAmount from '../../util/getCompactAmount';
+import {getUnitFromIngredientType} from '../../util/IngredientFormat';
 import LocalStorageKeys from '../../util/LocalStorageKeys';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
@@ -66,9 +67,11 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
   const ingredientMaxDepths = {};
   const ingredientTypes = {};
   const ingredientNames = {};
+  const ingredientIconNames = {};
   const addInput = (ingredient, depth) => {
     ingredientTypes[ingredient.id] = ingredient.type;
     ingredientNames[ingredient.id] = ingredient.name;
+    ingredientIconNames[ingredient.id] = ingredient.iconName;
     if (ingredientMaxDepths[ingredient.id] == null) {
       ingredientMaxDepths[ingredient.id] = depth;
     } else {
@@ -301,7 +304,8 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
 
             let amount = totalOutputAmount;
 
-            const title = `Click to ${recipe ? 'change' : 'add a'} recipe`;
+            const unit = getUnitFromIngredientType(ingredientTypes[ingredientId]);
+            const title = `ID: ${ingredientId}\nAmount: ${amount + (unit ? ' ' + unit : '')}\nClick to ${recipe ? 'change' : 'add a'} recipe`;
             const amountTextLeft = getCompactAmount(amount, ingredientTypes[ingredientId]);
             const amountTextTotal = ingredientsInStock[ingredientId]
               ? getCompactAmount(amount + ingredientsInStock[ingredientId], ingredientTypes[ingredientId])
@@ -317,7 +321,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                         title={title}>
               <div className={'content ' + (group !== NodeTypes.LEAF ? 'process' : 'ingredient')}>
                 <span className={(group !== NodeTypes.LEAF ? 'process' : 'ingredient') + '-header'}>
-                  <img src={'/icons/' + name} alt='' width="24" height="24"/>
+                  <img src={'/icons/' + ingredientId} alt='' width="24" height="24"/>
                   <span className={recipeTreeRoots[ingredientId] ? 'item-name-big' : ''}>{recipeTreeRoots[ingredientId]
                     ? '[Tracked item] ' + name
                     : name}</span>
@@ -334,7 +338,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                 {group !== NodeTypes.LEAF ? <div className='input'>
                   {recipe ? recipe.inputs.map((input) => {
                     return <div key={input.id}>
-                      <img src={'/icons/' + input.name} alt='' width="24" height="24"/>
+                      <img src={'/icons/' + input.id} alt='' width="24" height="24"/>
                       {input.name}
                       {input.amount ? <small>{getCompactAmount(input.amount * timesToCraft, input.type)}</small> : null}
                     </div>;

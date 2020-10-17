@@ -100,7 +100,7 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
                   const unit = getUnitFromIngredientType(ingredient.type);
                   return <div key={ingredient.id} className='ingredient'
                                title={getTitleForIngredient(ingredient)}>
-                    <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
+                    <img src={'/icons/' + ingredient.id} alt='' width="16" height="16"/>
                     <span>{ingredient.name}</span>
                     {ingredient.amount ? <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small> : null}
                   </div>;
@@ -109,7 +109,7 @@ const RecipeModal = ({outputItem, closeModal, onConfirm, chosenRecipe}) => {
                   const unit = getUnitFromIngredientType(ingredient.type);
                   return <div className='ingredient' key={ingredient.id}
                                title={getTitleForIngredient(ingredient)}>
-                    <img src={'/icons/' + ingredient.name} alt='' width="16" height="16"/>
+                    <img src={'/icons/' + ingredient.id} alt='' width="16" height="16"/>
                     <span>{ingredient.name}</span>
                     {ingredient.amount ? <small>{ingredient.amount + (unit ? ' ' + unit : '')}</small> : null}
                   </div>;

@@ -69,7 +69,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     </div>
     <div className='view-body'>
       {list.map((ingredient, index) => {
-        const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} mapping for ` + ingredient.name;
+        const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} recipe for ` + ingredient.name;
         return <div
           className={'view-entry ' + ingredient.nodeType + (nodesClosedState[ingredient.id] ? ' closed' : ' open')}
           key={ingredient.id + '-' + index}
@@ -89,7 +89,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
                         }));
                       }}/>
               : <span className='bullet'>{'  •  '}</span>}
-            <img src={'/icons/' + ingredient.name} alt='' width="24" height="24"/>
+            <img src={'/icons/' + ingredient.id} alt='' width="24" height="24"/>
             {ingredient.name}
             {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
           </div>
