@@ -397,12 +397,10 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
                             if (hideCompletedTasks) {
                               setFadingState((state) => ({...state, [ingredientId]: true}));
                               window.setTimeout(() => {
-                                setIngredientsInStock((state) => ({...state, [ingredientId]: 0}));
                                 setCheckboxState((state) => ({...state, [ingredientId]: CheckboxStates.CHECKED}));
                                 setFadingState((state) => ({...state, [ingredientId]: false}));
                               }, 400);
                             } else {
-                              setIngredientsInStock((state) => ({...state, [ingredientId]: 0}));
                               setCheckboxState((state) => ({...state, [ingredientId]: CheckboxStates.CHECKED}));
                             }
                           } else if (checkboxState[ingredientId] === CheckboxStates.CHECKED) {
