@@ -64,11 +64,11 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
               'less just an overview of the recipe structure. Use \'Tasks\' to gather and process items.'}/></small>
       </div>
       <span>
-        <Button size='big' onClick={onClickButton}>Add item</Button>
+        <Button className={!list.length ? 'pulsating' : ''} size='big' onClick={onClickButton}>Add item</Button>
       </span>
     </div>
     <div className='view-body'>
-      {list.map((ingredient, index) => {
+      {list.length ? list.map((ingredient, index) => {
         const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} recipe for ` + ingredient.name;
         return <div
           className={'view-entry ' + ingredient.nodeType + (nodesClosedState[ingredient.id] ? ' closed' : ' open')}
@@ -91,7 +91,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
               : <span className='bullet'>{'  •  '}</span>}
             <img src={'/icons/' + ingredient.id} alt='' width="24" height="24"/>
             {ingredient.name}
-            {ingredient.recipeType ? <small>{'via ' + ingredient.recipeType}</small> : null}
+            {ingredient.recipeType ? <small><i>{'via ' + ingredient.recipeType}</i></small> : null}
           </div>
           {[NodeTypes.ROOT, NodeTypes.STUMP].includes(ingredient.nodeType) ?
             <Icon type='close' className='icon-button error' title='Click to remove recipe'
@@ -100,7 +100,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
                     onRemoveElement(ingredient.id);
                   }}/> : null}
         </div>;
-      })}
+      }) : <div className='empty-content-hint'>Click on 'Add item' to start tracking</div>}
     </div>
   </View>;
 };

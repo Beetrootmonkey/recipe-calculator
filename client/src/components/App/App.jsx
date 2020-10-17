@@ -1,37 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import CreationIntent from '../../util/CreationIntent';
 import LocalStorageKeys from '../../util/LocalStorageKeys';
-import IngredientModal from '../Modal/IngredientModal';
 import RecipeModal from '../Modal/RecipeModal';
 import Navbar from '../Navbar/Navbar';
-import ViewSummary from '../View/ViewSummary';
-import ViewTree from '../View/ViewTree';
+import Project from '../Project/Project';
 import './styling.css';
 
 const App = () => {
-  const [ingredientModalData, setIngredientModalData] = useState(null);
   const [recipeModalData, setRecipeModalData] = useState(null);
   const [recipeMapping, setRecipeMapping] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.RECIPE_MAPPING)) || {});
-  const [recipeTreeRoots, setRecipeTreeRoots] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.TREE_ROOTS)) || {});
-  const [nodesClosedState, setNodesClosedState] = useState(JSON.parse(window.localStorage.getItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE)) || {});
+  const [activeTab, setActiveTab] = useState(JSON.parse(window.localStorage.getItem(LocalStorageKeys.ACTIVE_TAB)) || 0);
 
   useEffect(() => localStorage.setItem(LocalStorageKeys.RECIPE_MAPPING, JSON.stringify(recipeMapping)), [recipeMapping]);
-  useEffect(() => localStorage.setItem(LocalStorageKeys.TREE_ROOTS, JSON.stringify(recipeTreeRoots)), [recipeTreeRoots]);
-  useEffect(() => localStorage.setItem(LocalStorageKeys.TREE_NODES_CLOSED_STATE, JSON.stringify(nodesClosedState)), [nodesClosedState]);
-
-  let ingredientModal = null;
-  if (ingredientModalData) {
-    ingredientModal = <IngredientModal intent={ingredientModalData} closeModal={() => setIngredientModalData(null)}
-                                       onConfirm={(ingredient) => {
-                                         if (ingredientModalData === CreationIntent.CREATE_MAPPING) {
-                                           setRecipeModalData(ingredient);
-                                         } else if (ingredientModalData === CreationIntent.CREATE_TREE) {
-                                           setRecipeTreeRoots((state) => ({...state, [ingredient.id]: ingredient}));
-                                         } else {
-                                           console.log('UNKOWN OPTION');
-                                         }
-                                       }}/>;
-  }
+  useEffect(() => localStorage.setItem(LocalStorageKeys.ACTIVE_TAB, JSON.stringify(activeTab)), [activeTab]);
 
   let recipeModal = null;
   if (recipeModalData) {
@@ -47,35 +27,41 @@ const App = () => {
                                })} chosenRecipe={recipeMapping[recipeModalData.id]}/>;
   }
 
+  const renderTab = (index) => {
+    return <span className={'tab' + (activeTab === index ? ' active' : '')}
+                 onClick={() => setActiveTab(index)}>Project {index + 1}</span>;
+  };
+
+  const renderProject = (index) => {
+    if (activeTab === index) {
+      return <Project key={index} tab={index}
+                      setRecipeModalData={setRecipeModalData} recipeMapping={recipeMapping}/>;
+    }
+    return null;
+  };
+
   return <div className="App">
     <Navbar title='GT:NH Recipe Calculator v1.1.3'/>
-    <div className='content'>
-      <div className='body'>
-        {/*<ViewMapping onClickButton={() => setIngredientModalData(CreationIntent.CREATE_MAPPING)}*/}
-        {/*             recipeMapping={recipeMapping}*/}
-        {/*             onRemoveElement={(ingredientId) => setRecipeMapping((state) => {*/}
-        {/*               const newState = {...state};*/}
-        {/*               delete newState[ingredientId];*/}
-        {/*               return newState;*/}
-        {/*             })}/>*/}
-        <ViewTree onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
-                  onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                  recipeTreeRoots={recipeTreeRoots} nodesClosedState={nodesClosedState} setNodesClosedState={setNodesClosedState}
-                  onRemoveElement={(ingredientId) => setRecipeTreeRoots((state) => {
-                    const newState = {...state};
-                    delete newState[ingredientId];
-                    return newState;
-                  })}/>
-        <ViewSummary onClickButton={() => setIngredientModalData(CreationIntent.CREATE_TREE)}
-                     onClickElement={(ingredient) => setRecipeModalData(ingredient)} recipeMapping={recipeMapping}
-                     recipeTreeRoots={recipeTreeRoots} nodesClosedState={nodesClosedState}
-                     onSetAmount={(ingredient, amount) => setRecipeTreeRoots((state) => ({
-                       ...state,
-                       [ingredient.id]: {...ingredient, amount}
-                     }))}/>
-      </div>
+    <div className='tabs'>
+      {renderTab(0)}
+      {renderTab(1)}
+      {renderTab(2)}
+      {renderTab(3)}
+      {renderTab(4)}
+      {renderTab(5)}
+      {renderTab(6)}
+      {renderTab(7)}
     </div>
-    {ingredientModal}
+    <div className='content'>
+      {renderProject(0)}
+      {renderProject(1)}
+      {renderProject(2)}
+      {renderProject(3)}
+      {renderProject(4)}
+      {renderProject(5)}
+      {renderProject(6)}
+      {renderProject(7)}
+    </div>
     {recipeModal}
   </div>;
 };

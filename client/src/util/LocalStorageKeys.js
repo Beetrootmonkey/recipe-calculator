@@ -7,7 +7,8 @@ const LocalStorageKeys = {
   SUMMARY_RECIPE_LIST_DISPLAY_TYPE: 'summary_recipe_list_display_type',
   SUMMARY_HIDE_COMPLETED_TASKS: 'summary_hide_completed_tasks',
   SUMMARY_HIDE_TOOLS: 'summary_hide_tools',
-  SUMMARY_HIDE_NON_COMPLETABLE_TASKS: 'summary_hide_non_completable_tasks'
+  SUMMARY_HIDE_NON_COMPLETABLE_TASKS: 'summary_hide_non_completable_tasks',
+  ACTIVE_TAB: 'active_tab'
 };
 
 export default LocalStorageKeys;

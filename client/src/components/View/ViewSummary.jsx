@@ -30,35 +30,20 @@ const CheckboxStates = {
   CHECKED: 'CHECKED'
 };
 
-const importOldBooleanCheckboxState = () => {
-  const oldState = JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {};
-  const newState = {};
-  Object.entries(oldState).forEach(([ingredientId, oldValue]) => {
-    if (oldValue === true) {
-      newState[ingredientId] = CheckboxStates.CHECKED;
-    } else if (oldValue === false) {
-      newState[ingredientId] = CheckboxStates.UNCHECKED;
-    } else {
-      newState[ingredientId] = oldValue;
-    }
-  });
-
-  return newState;
-};
-
-const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmount, nodesClosedState}) => {
+const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSetAmount, nodesClosedState}) => {
+  const prefix = tab ? 'project_' + tab + '_' : '';
   const [modalData, setModalData] = useState(null);
   const [clearEverythingModalData, setClearEverythingModalData] = useState(false);
-  const [checkboxState, setCheckboxState] = useState(importOldBooleanCheckboxState());
-  const [ingredientsInStock, setIngredientsInStock] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK)) || {});
+  const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(prefix + LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
+  const [ingredientsInStock, setIngredientsInStock] = useState(JSON.parse(localStorage.getItem(prefix + LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK)) || {});
   const [recipeListDisplayType, setRecipeListDisplayType] = useState(localStorage.getItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE) || RecipeListDisplayTypes.IN_ORDER);
   const [hideCompletedTasks, setHideCompletedTasks] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS)) || false);
   const [hideTools, setHideTools] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS)) || false);
   const [hideNonCompletableTasks, setHideNonCompletableTasks] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_NON_COMPLETABLE_TASKS)) || false);
   const [fadingState, setFadingState] = useState({});
 
-  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
-  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK, JSON.stringify(ingredientsInStock)), [ingredientsInStock]);
+  useEffect(() => localStorage.setItem(prefix + LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
+  useEffect(() => localStorage.setItem(prefix + LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK, JSON.stringify(ingredientsInStock)), [ingredientsInStock]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE, recipeListDisplayType), [recipeListDisplayType]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS, JSON.stringify(hideCompletedTasks)), [hideCompletedTasks]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS, JSON.stringify(hideTools)), [hideTools]);
@@ -254,7 +239,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
       </span>
     </div>
     <div className='view-body'>
-      {Object.entries(groups).sort(([groupA], [groupB]) => {
+      {Object.entries(groups).length ? Object.entries(groups).sort(([groupA], [groupB]) => {
         if (groupA === 'Gather') {
           return -1;
         }
@@ -414,7 +399,7 @@ const ViewSummary = ({onClickElement, recipeMapping, recipeTreeRoots, onSetAmoun
             </div>;
           })}
         </div>;
-      })}
+      }) : <div className='empty-content-hint'>Click on 'Add item' to start tracking</div>}
       {modal}
       {clearEverythingModal}
     </div>

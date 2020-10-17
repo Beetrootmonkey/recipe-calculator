@@ -35,22 +35,14 @@ h3 {
 
 .App > .tabs > .tab {
   padding: 4px 8px;
+  background-color: #ababab;
   cursor: pointer;
   user-select: none;
-}
-
-.App > .tabs > .tab:not(:hover) {
-  background-color: #ababab;
-}
-
-.App > .tabs > .tab:not(.active):hover {
-  background-color: #e1e1e1;
 }
 
 .App > .tabs > .tab.active {
   background-color: white;
   color: black;
-  cursor: default;
 }
 
 .App > .content {

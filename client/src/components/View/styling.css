@@ -55,6 +55,19 @@
   vertical-align: middle;
 }
 
+@keyframes pulsating {
+  from {background-color: white; color: cornflowerblue}
+  50% {background-color: cornflowerblue; color: white}
+  to {background-color: white; color: cornflowerblue}
+}
+
+.View > .view-header .pulsating {
+  animation-name: pulsating;
+  animation-duration: 4s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
 .View > .view-header > .icon-button-wrapper {
   margin-right: 8px;
 }
@@ -82,6 +95,12 @@
 
 .View > .view-body {
   overflow-x: hidden;
+}
+
+.View > .view-body > .empty-content-hint {
+  margin-top: 20px;
+  text-align: center;
+  color: gray;
 }
 
 .ViewTree .view-entry {
