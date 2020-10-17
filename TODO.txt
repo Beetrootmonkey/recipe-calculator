@@ -40,3 +40,5 @@
 - Brewing Stand hat Menge 0 in "Basic Brewer"
 - Items markieren, damit diese an allen Stellen und in allen Ansichten hervorgehoben werden
 - WTF-Funktion, die anzeigt, in welchen Steps ein angeklickten Item benutzt wird
+- Kontextmenü für Reiter -> Umbennen
+- Reiter-Neuanlage und Löschen via Kontextmenü

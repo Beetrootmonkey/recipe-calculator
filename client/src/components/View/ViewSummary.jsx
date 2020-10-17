@@ -199,6 +199,19 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
     </Modal>;
   }
 
+  const getProgressValueFromCheckboxState = (value) => {
+    if (value === CheckboxStates.CHECKED) {
+      return 2;
+    } else if (value === CheckboxStates.INDETERMINATE) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const calculateTotalProgress = () => {
+    return Object.values(checkboxState).map(getProgressValueFromCheckboxState).reduce((acc, value) => acc + value, 0);
+  };
+
   return <View className='ViewSummary'>
     <div className='view-header'>
       <span className='title'><h2>Tasks</h2><small>
@@ -208,6 +221,11 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
               'the pencil button next to ingredients. Click the pencil button next to the tracked item (\'Root\') to ' +
               'change the amount you want to craft. Use the \'Clear\' button to reset stock and checkbox data.'}/></small>
       </span>
+      <span className='progress-bar'>
+        <small>Progress</small>
+        <progress max={list.length * 2} value={calculateTotalProgress()}/>
+      </span>
+      <span className='spacer'/>
       <div className='icon-button-wrapper'>
         <Icon type='format_paint'
               className={'icon-button big' + (!hideTools ? ' active' : '')}
@@ -229,7 +247,6 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
               onClick={() => setHideNonCompletableTasks(!hideNonCompletableTasks)}
         />
       </div>
-      <span className='spacer'/>
       <select value={recipeListDisplayType} onChange={(e) => setRecipeListDisplayType(e.target.value)}>
         <option value={RecipeListDisplayTypes.IN_ORDER}>{RecipeListDisplayOptions.IN_ORDER}</option>
         <option value={RecipeListDisplayTypes.GROUPED_BY_TYPE}>{RecipeListDisplayOptions.GROUPED_BY_TYPE}</option>
