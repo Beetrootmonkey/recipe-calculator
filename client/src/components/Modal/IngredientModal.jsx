@@ -69,6 +69,7 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
           </thead>
           <tbody>
             {(data || []).map((e) => {
+              const title = `ID: ${e.id}`;
               return <tr className='clickable' key={e.id} onClick={() => {
                 onConfirm(e);
                 closeModal();
@@ -76,7 +77,7 @@ const IngredientModal = ({className, intent, closeModal, onConfirm}) => {
               }}>
                 <td>{e.mod || IngredientTypes[e.type]}</td>
                 <td className='image'><img src={'/icons/' + e.id} alt='' width="32" height="32"/></td>
-                <td>{e.name}</td>
+                <td title={title}>{e.name}</td>
               </tr>;
             })}
           </tbody>

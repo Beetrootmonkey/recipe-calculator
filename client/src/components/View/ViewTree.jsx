@@ -69,7 +69,7 @@ const ViewTree = ({onClickButton, onClickElement, onRemoveElement, recipeMapping
     </div>
     <div className='view-body'>
       {list.length ? list.map((ingredient, index) => {
-        const title = `Click to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} recipe for ` + ingredient.name;
+        const title = `ID: ${ingredient.id}\nClick to ${recipeMapping[ingredient.id] ? 'change' : 'add a'} recipe`;
         return <div
           className={'view-entry ' + ingredient.nodeType + (nodesClosedState[ingredient.id] ? ' closed' : ' open')}
           key={ingredient.id + '-' + index}

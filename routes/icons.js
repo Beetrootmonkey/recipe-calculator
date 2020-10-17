@@ -30,8 +30,13 @@ router.get('/:ingredientId', function (req, res, next) {
       const file = bufferFile('../icons/' + iconName + '.png');
       res.send(file);
     } catch (e) {
-      const file = bufferFile('../icons/_default_.png');
-      res.send(file);
+      try {
+        const file = bufferFile('../icons/' + req.params.ingredientId + '.png');
+        res.send(file);
+      } catch (e) {
+        const file = bufferFile('../icons/_default_.png');
+        res.send(file);
+      }
     }
 
   } catch (e) {
