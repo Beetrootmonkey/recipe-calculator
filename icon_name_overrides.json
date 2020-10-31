@@ -3,5 +3,18 @@
   "gt.metaitem.03.32037": "Integrated Logic Circuit_2",
   "gt.metaitem.01.26054": "Silver Bolt_2",
   "gt.metaitem.01.26306": "Stainless Steel Bolt_2",
-  "gt.metaitem.01.32718": "Capacitor_2"
+  "gt.metaitem.01.32718": "Capacitor_2",
+  "item.CompressedSDHD120": "Compressed Alloy _SDHC-120_",
+  "item.RawSDHCAlloy": "Raw _SDHC-120_ Alloy",
+  "fluid.molten.solderingalloy": "_default_",
+  "gt.metaitem.01.32740": "Glass Pane_10",
+  "gt.metaitem.01.17880": "Rubber Sheet_2",
+  "fluid.molten.styrenebutadienerubber": "_default_",
+  "fluid.molten.silicon": "_default_",
+  "gt.metaitem.01.11028": "Titanium Ingot_2",
+  "gt.metaitem.01.11089": "Lead Ingot_4",
+  "gt.metaitem.01.11300": "Bronze Ingot_4",
+  "gt.metaitem.01.11057": "Tin Ingot_7",
+  "item.reinforcedPlateT2": "Heavy-Duty Plate_3",
+  "item.reinforcedPlateT3": "Heavy-Duty Plate_2"
 }

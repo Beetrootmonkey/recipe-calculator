@@ -5,6 +5,12 @@ var router = express.Router();
 const getIngredientById = (id) => data.ingredients[id];
 const getIngredientWithNameAndType = ([id, amount]) => {
   const ingredient = getIngredientById(id);
+
+  if (!ingredient) {
+    console.error('Failed to find Ingredient for ID \'' + id + '\'')
+    return null;
+  }
+
   return {
     id, amount, name: ingredient ? ingredient.name : null, type: ingredient ? ingredient.type : null, mod: ingredient.mod
   };

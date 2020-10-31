@@ -41,7 +41,7 @@ const App = () => {
   };
 
   return <div className="App">
-    <Navbar title='GT:NH Recipe Calculator v1.2.2'/>
+    <Navbar title='GT:NH Recipe Calculator v1.2.3'/>
     <div className='tabs'>
       {renderTab(0)}
       {renderTab(1)}
@@ -51,6 +51,14 @@ const App = () => {
       {renderTab(5)}
       {renderTab(6)}
       {renderTab(7)}
+      {renderTab(8)}
+      {renderTab(9)}
+      {renderTab(10)}
+      {renderTab(11)}
+      {renderTab(12)}
+      {renderTab(13)}
+      {renderTab(14)}
+      {renderTab(15)}
     </div>
     <div className='content'>
       {renderProject(0)}
@@ -61,6 +69,14 @@ const App = () => {
       {renderProject(5)}
       {renderProject(6)}
       {renderProject(7)}
+      {renderProject(8)}
+      {renderProject(9)}
+      {renderProject(10)}
+      {renderProject(11)}
+      {renderProject(12)}
+      {renderProject(13)}
+      {renderProject(14)}
+      {renderProject(15)}
     </div>
     {recipeModal}
   </div>;

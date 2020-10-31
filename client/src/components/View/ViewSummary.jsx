@@ -157,6 +157,10 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
     if (recipeListDisplayType === RecipeListDisplayTypes.GROUPED_BY_TYPE) {
       type = props.recipe ? props.recipe.type : nodeType;
     }
+    if (nodeType === NodeTypes.ROOT) {
+      type = 'Tracked items'
+    }
+
     if (!groups[type]) {
       groups[type] = [];
     }
@@ -263,11 +267,17 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
         if (groupB === 'Gather') {
           return 1;
         }
+        if (groupA === 'Tracked items') {
+          return 1;
+        }
+        if (groupB === 'Tracked items') {
+          return -1;
+        }
         return groupA < groupB ? -1 : 1;
       }).map(([group, ingredientList]) => {
         return <div key={group}>
           <div className='view-summary-group'>{group}</div>
-          {ingredientList.sort(({ingredientId: ingredientIdA}, {ingredientId: ingredientIdB}) => {
+          {ingredientList.sort(({ingredientId: ingredientIdA, depth: depthA, recipe: recipeA}, {ingredientId: ingredientIdB, depth: depthB, recipe: recipeB}) => {
             if (group === 'Gather') {
               const nameA = ingredientNames[ingredientIdA];
               const nameB = ingredientNames[ingredientIdB];
@@ -298,6 +308,20 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
                 return -1;
               } else if (!nameA.includes('Ingot') && nameB.includes('Ingot')) {
                 return 1;
+              }
+            } else if (depthA === depthB) {
+              if (recipeA && recipeB) {
+                if (recipeA.type === recipeB.type) {
+                  if (ingredientIdA < ingredientIdB) {
+                    return -1;
+                  } else {
+                    return 1;
+                  }
+                } else if (recipeA.type < recipeB.type) {
+                  return -1;
+                } else {
+                  return 1;
+                }
               }
             }
             return 0;
@@ -334,7 +358,7 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
                     : null}
                   {/*{ingredientsInStock[ingredientId] ?*/}
                   {/*  <small>{' (+' + getCompactAmount(ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) + ' in stock)'}</small> : null}*/}
-                  {recipe && recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE ?
+                  {recipe && (recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE || group === 'Tracked items') ?
                     <small><i>{'[via ' + recipe.type + ']'}</i></small> : null}
                 </span>
                 {group !== NodeTypes.LEAF ? <div className='input'>

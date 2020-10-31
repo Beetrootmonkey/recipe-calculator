@@ -1,0 +1,24 @@
+{
+  "recipes": [
+    {
+      "title": "Custom",
+      "recipeList": [
+        {
+          "id": "advanced_machine_casing",
+          "inputs": {
+            "ic2.blockMachine": 1,
+            "ic2.itemPartCarbonPlate": 2,
+            "ic2.itemPartAlloy": 2,
+            "gt.metaitem.01.17305": 4
+          },
+          "outputs": {
+            "ic2.blockAdvMachine": 1
+          }
+        }
+      ]
+    }
+  ],
+  "ingredients": {
+
+  }
+}
