@@ -35,7 +35,6 @@
 - Abgehakte Tasks erst grün, dann ausfaden
 - "Group by output"-Option
 - Voltage Mod-seitig durch Amperage teilen (die aber nicht bekannt ist)
-- "Projekte" mit anderen tracked items + tree + tasks, aber die selben hinterlegten rezepte
 - "Clear" soll tracked items mit wegwerfen
 - Brewing Stand hat Menge 0 in "Basic Brewer"
 - Items markieren, damit diese an allen Stellen und in allen Ansichten hervorgehoben werden
@@ -45,7 +44,7 @@
 - Button, um Alles in Gather abhaken
 - IC2-Crafting (Shaped + Shapeless)
 - Custom Crafting
-- Falsches Icon melden
+- Falsches Icon melden -> Icons in Modal anzeigen, eines auswählen, serverseitig in "Änderungsvorschläge"-Datei speichern
 - Multiplayer
 - margin-bottom bei abgehakten Tasks
 - exclude-option beim suchen (maschinen/items)
