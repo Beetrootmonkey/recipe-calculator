@@ -5,11 +5,10 @@ import LocalStorageKeys from '../../util/LocalStorageKeys';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
 import Modal from '../Modal/Modal';
-import SummaryModal from '../Modal/SummaryModal';
 import View from './View';
 
 const NodeTypes = {
-  ROOT: 'Root',
+  ROOT: 'Tracked items',
   LEAF: 'Gather',
   INTERMEDIATE: 'Process'
 };
@@ -30,23 +29,23 @@ const CheckboxStates = {
   CHECKED: 'CHECKED'
 };
 
-const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSetAmount, nodesClosedState}) => {
+const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, nodesClosedState, setAmountModalData}) => {
   const prefix = tab ? 'project_' + tab + '_' : '';
-  const [modalData, setModalData] = useState(null);
   const [clearEverythingModalData, setClearEverythingModalData] = useState(false);
   const [checkboxState, setCheckboxState] = useState(JSON.parse(localStorage.getItem(prefix + LocalStorageKeys.SUMMARY_CHECK_BOX_STATE)) || {});
   const [ingredientsInStock, setIngredientsInStock] = useState(JSON.parse(localStorage.getItem(prefix + LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK)) || {});
   const [recipeListDisplayType, setRecipeListDisplayType] = useState(localStorage.getItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE) || RecipeListDisplayTypes.IN_ORDER);
   const [hideCompletedTasks, setHideCompletedTasks] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS)) || false);
-  const [hideTools, setHideTools] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS)) || false);
+  // const [hideTools, setHideTools] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS)) || false);
+  const [hideTools, setHideTools] = useState(false);
   const [hideNonCompletableTasks, setHideNonCompletableTasks] = useState(JSON.parse(localStorage.getItem(LocalStorageKeys.SUMMARY_HIDE_NON_COMPLETABLE_TASKS)) || false);
   const [fadingState, setFadingState] = useState({});
 
-  useEffect(() => localStorage.setItem(prefix + LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [checkboxState]);
-  useEffect(() => localStorage.setItem(prefix + LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK, JSON.stringify(ingredientsInStock)), [ingredientsInStock]);
+  useEffect(() => localStorage.setItem(prefix + LocalStorageKeys.SUMMARY_CHECK_BOX_STATE, JSON.stringify(checkboxState)), [prefix, checkboxState]);
+  useEffect(() => localStorage.setItem(prefix + LocalStorageKeys.SUMMARY_INGREDIENTS_IN_STOCK, JSON.stringify(ingredientsInStock)), [prefix, ingredientsInStock]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_RECIPE_LIST_DISPLAY_TYPE, recipeListDisplayType), [recipeListDisplayType]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_COMPLETED_TASKS, JSON.stringify(hideCompletedTasks)), [hideCompletedTasks]);
-  useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS, JSON.stringify(hideTools)), [hideTools]);
+  // useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_TOOLS, JSON.stringify(hideTools)), [hideTools]);
   useEffect(() => localStorage.setItem(LocalStorageKeys.SUMMARY_HIDE_NON_COMPLETABLE_TASKS, JSON.stringify(hideNonCompletableTasks)), [hideNonCompletableTasks]);
 
   const ingredientMaxDepths = {};
@@ -110,7 +109,7 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
         totalOutputAmount: neededAmount,
         overhead: 0,
         timesToCraft: 1,
-        nodeType: recipeTreeRoots[ingredientId] ? NodeTypes.ROOT : NodeTypes.LEAF
+        nodeType: NodeTypes.LEAF
       };
     }
 
@@ -140,7 +139,8 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
   const groups = {};
   list.forEach(({nodeType, ...props}) => {
     const isTool = () => {
-      return !ingredientAmounts[props.ingredientId];
+      return false;
+      // return !ingredientAmounts[props.ingredientId];
     };
 
     if (hideCompletedTasks && checkboxState[props.ingredientId] === CheckboxStates.CHECKED) {
@@ -149,16 +149,13 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
     if (hideTools && isTool()) {
       return;
     }
-    if (hideNonCompletableTasks && props.recipe && props.recipe.inputs.find((input) => checkboxState[input.id] !== CheckboxStates.CHECKED) && nodeType !== NodeTypes.ROOT) {
+    if (hideNonCompletableTasks && props.recipe && props.recipe.inputs.find((input) => checkboxState[input.id] !== CheckboxStates.CHECKED)) {
       return;
     }
 
     let type = nodeType;
     if (recipeListDisplayType === RecipeListDisplayTypes.GROUPED_BY_TYPE) {
       type = props.recipe ? props.recipe.type : nodeType;
-    }
-    if (nodeType === NodeTypes.ROOT) {
-      type = 'Tracked items'
     }
 
     if (!groups[type]) {
@@ -167,12 +164,6 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
     groups[type].push(props);
   });
 
-  let modal;
-  if (modalData) {
-    modal = <SummaryModal ingredient={modalData} closeModal={() => setModalData(null)}
-                          onConfirm={modalData.onConfirm || ((amount) => onSetAmount(modalData, amount))}
-                          inStock={modalData.inStock} amountInStock={modalData.amountInStock}/>;
-  }
 
   let clearEverythingModal;
   if (clearEverythingModalData) {
@@ -222,21 +213,20 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
         <Icon type='help' className='help-icon'
               title={'This view will show ingredients you need to gather and recipes you need to do. ' +
               'Do these tasks from top to bottom. You can tell the system if you already have items in stock by clicking ' +
-              'the pencil button next to ingredients. Click the pencil button next to the tracked item (\'Root\') to ' +
-              'change the amount you want to craft. Use the \'Clear\' button to reset stock and checkbox data.'}/></small>
+              'the pencil button next to ingredients.'}/></small>
       </span>
       <span className='progress-bar'>
         <small>Progress</small>
         <progress max={list.length * 2} value={calculateTotalProgress()}/>
       </span>
       <span className='spacer'/>
-      <div className='icon-button-wrapper'>
-        <Icon type='format_paint'
-              className={'icon-button big' + (!hideTools ? ' active' : '')}
-              title={!hideTools ? 'Click to hide tools in \'Gather\'' : 'Click to show tools in \'Gather\''}
-              onClick={() => setHideTools(!hideTools)}
-        />
-      </div>
+      {/*<div className='icon-button-wrapper'>*/}
+      {/*  <Icon type='format_paint'*/}
+      {/*        className={'icon-button big' + (!hideTools ? ' active' : '')}*/}
+      {/*        title={!hideTools ? 'Click to hide tools in \'Gather\'' : 'Click to show tools in \'Gather\''}*/}
+      {/*        onClick={() => setHideTools(!hideTools)}*/}
+      {/*  />*/}
+      {/*</div>*/}
       <div className='icon-button-wrapper'>
         <Icon type='done_all'
               className={'icon-button big' + (!hideCompletedTasks ? ' active' : '')}
@@ -247,7 +237,9 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
       <div className='icon-button-wrapper'>
         <Icon type='watch_later'
               className={'icon-button big' + (!hideNonCompletableTasks ? ' active' : '')}
-              title={!hideNonCompletableTasks ? 'Click to hide tasks that you cannot complete yet. This is based on the checkboxes of previous tasks.' : 'Click to keep/show tasks that you cannot complete yet. This is based on the checkboxes of previous tasks.'}
+              title={!hideNonCompletableTasks
+                ? 'Click to hide tasks that you cannot complete yet. This is based on the checkboxes of previous tasks.'
+                : 'Click to keep/show tasks that you cannot complete yet. This is based on the checkboxes of previous tasks.'}
               onClick={() => setHideNonCompletableTasks(!hideNonCompletableTasks)}
         />
       </div>
@@ -261,18 +253,18 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
     </div>
     <div className='view-body'>
       {Object.entries(groups).length ? Object.entries(groups).sort(([groupA], [groupB]) => {
-        if (groupA === 'Gather') {
+        if (groupA === NodeTypes.LEAF) {
           return -1;
         }
-        if (groupB === 'Gather') {
+        if (groupB === NodeTypes.LEAF) {
           return 1;
         }
-        if (groupA === 'Tracked items') {
-          return 1;
-        }
-        if (groupB === 'Tracked items') {
-          return -1;
-        }
+        // if (groupA === NodeTypes.ROOT) {
+        //   return 1;
+        // }
+        // if (groupB === NodeTypes.ROOT) {
+        //   return -1;
+        // }
         return groupA < groupB ? -1 : 1;
       }).map(([group, ingredientList]) => {
         return <div key={group}>
@@ -331,7 +323,9 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
             let amount = totalOutputAmount;
 
             const unit = getUnitFromIngredientType(ingredientTypes[ingredientId]);
-            const title = `ID: ${ingredientId}\nAmount: ${amount + (unit ? ' ' + unit : '')}\nClick to ${recipe ? 'change' : 'add a'} recipe`;
+            const title = `ID: ${ingredientId}\nAmount: ${amount + (unit ? ' ' + unit : '')}\nClick to ${recipe
+              ? 'change'
+              : 'add a'} recipe`;
             const amountTextLeft = getCompactAmount(amount, ingredientTypes[ingredientId]);
             const amountTextTotal = ingredientsInStock[ingredientId]
               ? getCompactAmount(amount + ingredientsInStock[ingredientId], ingredientTypes[ingredientId])
@@ -358,8 +352,10 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
                     : null}
                   {/*{ingredientsInStock[ingredientId] ?*/}
                   {/*  <small>{' (+' + getCompactAmount(ingredientsInStock[ingredientId], ingredientTypes[ingredientId]) + ' in stock)'}</small> : null}*/}
-                  {recipe && (recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE || group === 'Tracked items') ?
-                    <small><i>{'[via ' + recipe.type + ']'}</i></small> : null}
+                  {recipe && (recipeListDisplayType !== RecipeListDisplayTypes.GROUPED_BY_TYPE || group === 'Tracked items')
+                    ?
+                    <small><i>{'[via ' + recipe.type + ']'}</i></small>
+                    : null}
                 </span>
                 {group !== NodeTypes.LEAF ? <div className='input'>
                   {recipe ? recipe.inputs.map((input) => {
@@ -374,15 +370,11 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
               <span className='spacer'/>
               <span className='icon-button-wrapper'>
                 {recipeTreeRoots[ingredientId]
-                  ? <Icon type='build' className='icon-button' title='Click to edit amount to craft'
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setModalData(recipeTreeRoots[ingredientId]);
-                          }}/>
+                  ? null
                   : <Icon type='storage' className='icon-button' title='Click to edit amount in stock'
                           onClick={(e) => {
                             e.stopPropagation();
-                            setModalData({
+                            setAmountModalData({
                               id: ingredientId,
                               name: ingredientNames[ingredientId],
                               type: ingredientTypes[ingredientId],
@@ -441,7 +433,6 @@ const ViewSummary = ({tab, onClickElement, recipeMapping, recipeTreeRoots, onSet
           })}
         </div>;
       }) : <div className='empty-content-hint'>Click on 'Add item' to start tracking</div>}
-      {modal}
       {clearEverythingModal}
     </div>
   </View>;

@@ -20,8 +20,14 @@
   border-right: #e1e1e1 1px solid;
 }
 
-.ViewSummary {
+.ViewTrackedItems {
+  /*flex: 2 2;*/
   flex: 1 1;
+  border-right: #e1e1e1 1px solid;
+}
+
+.ViewSummary {
+  flex: 2 2;
   border-right: #e1e1e1 1px solid;
 }
 
@@ -102,6 +108,10 @@
   color: gray;
 }
 
+.ViewTrackedItems .view-entry {
+  display: flex;
+}
+
 .ViewTree .view-entry {
   display: flex;
   justify-content: space-between;
@@ -151,14 +161,22 @@
 }
 
 .View .view-entry .icon-button {
-  cursor: pointer;
-  color: #969696;
   border-radius: 4px;
   font-size: 20px;
   width: 20px;
   height: 20px;
   margin-top: 2px;
   padding: 4px;
+}
+
+.icon-button:not(.disabled) {
+  color: #969696;
+  cursor: pointer;
+}
+
+.icon-button.disabled {
+  color: rgba(150, 150, 150, 0.4);
+  cursor: not-allowed;
 }
 
 .View .view-entry .icon-button.big {
@@ -169,26 +187,29 @@
   padding: 2px;
 }
 
-.View .view-entry:hover .icon-button {
-  border-radius: 4px;
+.View .view-entry:hover .icon-button:not(.disabled) {
   color: white;
 }
 
-.View .view-entry .icon-button:hover {
+.View .view-entry:hover .icon-button.disabled {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.View .view-entry .icon-button:not(.disabled):hover {
   color: white;
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.View .view-entry .icon-button:active {
+.View .view-entry .icon-button:not(.disabled):active {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-.View .view-entry .icon-button:hover.error {
+.View .view-entry .icon-button:not(.disabled):hover.error {
   color: #ff2b1d;
   background-color: rgba(255, 43, 29, 0.2);
 }
 
-.View .view-entry .icon-button:active.error {
+.View .view-entry .icon-button:not(.disabled):active.error {
   background-color: rgba(255, 43, 29, 0.4);
 }
 
@@ -209,8 +230,32 @@
   flex: 1 1;
 }
 
+.ViewTrackedItems .view-entry .icon-button {
+  margin-bottom: 2px;
+  margin-right: 4px;
+}
+
+.ViewTrackedItems .view-entry {
+  user-select: none;
+}
+
+.ViewTrackedItems .view-entry:hover {
+  background-color: cornflowerblue;
+  color: white;
+}
+
 .ViewSummary .view-entry:hover {
   background-color: cornflowerblue;
+  color: white;
+}
+
+.ViewTrackedItems .view-entry small {
+  font-size: 12px;
+  color: #969696;
+  margin-left: 4px;
+}
+
+.ViewTrackedItems .view-entry:hover small {
   color: white;
 }
 

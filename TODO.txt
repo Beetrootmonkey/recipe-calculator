@@ -45,7 +45,6 @@
 - IC2-Crafting (Shaped + Shapeless)
 - Custom Crafting
 - Falsches Icon melden -> Icons in Modal anzeigen, eines auswählen, serverseitig in "Änderungsvorschläge"-Datei speichern
-- Multiplayer
 - margin-bottom bei abgehakten Tasks
 - exclude-option beim suchen (maschinen/items)
 - Einklappen via Tasks (Kontextmenü)
